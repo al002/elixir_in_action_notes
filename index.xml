@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Elixir in action notes</title><link>https://al002.github.io/</link><description>Recent content on Elixir in action notes</description><generator>Hugo -- 0.140.2</generator><language>en-us</language><lastBuildDate>Sun, 05 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://al002.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Chapter 1</title><link>https://al002.github.io/pages/chapter-1/</link><pubDate>Sun, 05 Jan 2025 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-1/</guid><description>&lt;p>Erlang&lt;/p>
+&lt;ul>
+&lt;li>High availability / Concurrency&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img loading="lazy" src="https://al002.github.io/assets/2024-12-30_14-49-36_1735541391110_0.png" alt="2024-12-30_14-49-36.png" />
+&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Fault tolerance&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Erlang process is completely isolated from each other.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>no memory share&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>a crash of one process doesn’t cause a crash of other processes&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>communicate via asynchronous messages&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Scalability&lt;/p>
+&lt;ul>
+&lt;li>BEAM can take advantage of all available CPU cores&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Distribution&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>processes works the same way in same BEAM instance or remote computer&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Erlang-based system is automatically ready to be distributed over multiple machines&lt;/p></description></item><item><title>Chapter 2</title><link>https://al002.github.io/pages/chapter-2/</link><pubDate>Sat, 04 Jan 2025 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-2/</guid><description>&lt;p>Organizing code&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Modules&lt;/p>
+&lt;ul>
+&lt;li>A module is a collection of functions, somewhat like a namespace&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">Geometry&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> rectangle_area(a, b) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> a&lt;span style="color:#f92672">*&lt;/span>b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Functions&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> rectangle_area(a, b) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> rectangle_area(a, b), &lt;span style="color:#e6db74">do&lt;/span>: a &lt;span style="color:#f92672">*&lt;/span> b
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Arity
++ the number of arguments a function receives
++ A function is uniquely identified by its containing module, name, and arity
++ Rectangle.area/2, where /2 denotes the function’s arity.
++ same name but different arities are two different functions
++ commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments
++ `\\` operator followed by the argument’s default value
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">Calculator&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> add(a, b \\ &lt;span style="color:#ae81ff">0&lt;/span>), &lt;span style="color:#e6db74">do&lt;/span>: a &lt;span style="color:#f92672">+&lt;/span> b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + generates two functions
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">Calculator&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> add(a), &lt;span style="color:#e6db74">do&lt;/span>: add(a, &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> add(a, b), &lt;span style="color:#e6db74">do&lt;/span>: a&lt;span style="color:#f92672">+&lt;/span>b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + cannot accept a variable number of arguments
++ Visibility
++ `def` macro is `exported`
++ `defp` macro is private
++ can be used only inside the module it’s defined in
+&lt;/code>&lt;/pre>
+&lt;ul>
+&lt;li>Imports and alias&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Import&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">MyModule&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">import&lt;/span> &lt;span style="color:#a6e22e">IO&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> my_function &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> puts &lt;span style="color:#e6db74">&amp;#34;Calling imported function.&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Importing a module allows to call its public functions without prefixing them with the module name
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Alias&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">MyModule&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">alias&lt;/span> &lt;span style="color:#a6e22e">IO&lt;/span>, &lt;span style="color:#e6db74">as&lt;/span>: &lt;span style="color:#a6e22e">MyIO&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> my_function &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">MyIO&lt;/span>&lt;span style="color:#f92672">.&lt;/span>puts(&lt;span style="color:#e6db74">&amp;#34;Calling imported function.&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">MyModule&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">alias&lt;/span> &lt;span style="color:#a6e22e">Geometry.Rectangle&lt;/span>, &lt;span style="color:#e6db74">as&lt;/span>: &lt;span style="color:#a6e22e">Rectangle&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> my_function &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Rectangle&lt;/span>&lt;span style="color:#f92672">.&lt;/span>area(...)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>Module attributes&lt;/p></description></item><item><title>Chapter 3</title><link>https://al002.github.io/pages/chapter-3/</link><pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-3/</guid><description>&lt;p>Pattern matching&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>=&lt;/code> operator is called the match operator&lt;/p>
+&lt;ul>
+&lt;li>assignment-like expression is an example of &lt;em>pattern matching&lt;/em>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; person &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">{&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Matching tuples
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">{&lt;/span>name, age&lt;span style="color:#f92672">}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">{&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Matching constants
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>2&lt;span style="color:#f92672">)&lt;/span>&amp;gt; person &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">{&lt;/span>:person, &lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>3&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">{&lt;/span>:person, name, age&lt;span style="color:#f92672">}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> person
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>:person, &lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>:ok, contents&lt;span style="color:#f92672">}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> File.read&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;my_app.config&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + By using constants in patterns, you tighten the match, ensuring some part of the right side has a specific value.
++ `^` pin operator
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>7&lt;span style="color:#f92672">)&lt;/span>&amp;gt; expected_name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>8&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">{&lt;/span>^expected_name, _&lt;span style="color:#f92672">}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">{&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>9&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">{&lt;/span>^expected_name, _&lt;span style="color:#f92672">}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">{&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, 30&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>** &lt;span style="color:#f92672">(&lt;/span>MatchError&lt;span style="color:#f92672">)&lt;/span> no match of right hand side value: &lt;span style="color:#f92672">{&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, 30&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + Using `^expected_name` in patterns indicates you expect the value of the variable `expected_name` to be in the appropriate position in the right-side term
++ like `({&amp;quot;Bob&amp;quot;, _} = …)`
++ Matching lists
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">[&lt;/span>first, second, third&lt;span style="color:#f92672">]&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">[&lt;/span>1, 2, 3&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>1, 2, 3&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>3&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">[&lt;/span>head | tail&lt;span style="color:#f92672">]&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">[&lt;/span>1, 2, 3&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>1, 2, 3&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>4&lt;span style="color:#f92672">)&lt;/span>&amp;gt; head
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>5&lt;span style="color:#f92672">)&lt;/span>&amp;gt; tail
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>2, 3&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Matching maps
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; %&lt;span style="color:#f92672">{&lt;/span>name: name, age: age&lt;span style="color:#f92672">}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> %&lt;span style="color:#f92672">{&lt;/span>name: &lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, age: 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>%&lt;span style="color:#f92672">{&lt;/span>age: 25, name: &lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>6&lt;span style="color:#f92672">)&lt;/span>&amp;gt; %&lt;span style="color:#f92672">{&lt;/span>age: age, works_at: works_at&lt;span style="color:#f92672">}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> %&lt;span style="color:#f92672">{&lt;/span>name: &lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, age: 25&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>** &lt;span style="color:#f92672">(&lt;/span>MatchError&lt;span style="color:#f92672">)&lt;/span> no match of right hand side value
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Matching bitstrings and binaries
+&lt;/code>&lt;/pre>
+&lt;pre tabindex="0">&lt;code class="language-bahs" data-lang="bahs">iex(6)&amp;gt; &amp;lt;&amp;lt;b1, rest :: binary&amp;gt;&amp;gt; = binary
+&amp;lt;&amp;lt;1, 2, 3&amp;gt;&amp;gt;
+iex(7)&amp;gt; b1
+1
+iex(8)&amp;gt; rest
+&amp;lt;&amp;lt;2, 3&amp;gt;&amp;gt;
+&lt;/code>&lt;/pre>&lt;pre>&lt;code>+ Matching binary strings
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>16&lt;span style="color:#f92672">)&lt;/span>&amp;gt; command &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;ping www.example.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;ping www.example.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>17&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#e6db74">&amp;#34;ping &amp;#34;&lt;/span> &amp;lt;&amp;gt; url &lt;span style="color:#f92672">=&lt;/span> command
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;ping www.example.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>18&lt;span style="color:#f92672">)&lt;/span>&amp;gt; url
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;www.example.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Compound matches
++ match expression
++ `pattern = expression`
++ `iex(2)&amp;gt; a = 1 + 3`
++ 1 The expression on the right side is evaluated.
++ 2 The resulting value is matched against the left-side pattern.
++ 3 Variables from the pattern are bound.
++ 4 The result of the match expression is the result of the right-side term
++ match chaining
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>3&lt;span style="color:#f92672">)&lt;/span>&amp;gt; a &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">(&lt;/span>b &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> + 3&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>4&lt;span style="color:#f92672">)&lt;/span>&amp;gt; a &lt;span style="color:#f92672">=&lt;/span>b&lt;span style="color:#f92672">=&lt;/span>1+3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">4&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + 1 The expression 1 + 3 is evaluated.
++ 2 The result (4) is matched against the pattern b.
++ 3 The result of the inner match (which is, again, 4) is matched against the pattern a.
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>6&lt;span style="color:#f92672">)&lt;/span>&amp;gt; date_time &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">{&lt;/span>_, &lt;span style="color:#f92672">{&lt;/span>hour, _, _&lt;span style="color:#f92672">}}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> :calendar.local_time&lt;span style="color:#f92672">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>7&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">{&lt;/span>_, &lt;span style="color:#f92672">{&lt;/span>hour, _, _&lt;span style="color:#f92672">}}&lt;/span> &lt;span style="color:#f92672">=&lt;/span> date_time &lt;span style="color:#f92672">=&lt;/span> :calendar.local_time&lt;span style="color:#f92672">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>8&lt;span style="color:#f92672">)&lt;/span>&amp;gt; date_time
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{{&lt;/span>2023, 11, 11&lt;span style="color:#f92672">}&lt;/span>, &lt;span style="color:#f92672">{&lt;/span>21, 32, 34&lt;span style="color:#f92672">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>9&lt;span style="color:#f92672">)&lt;/span>&amp;gt; hour
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">21&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + ordering is not matter
++ because the result of a pattern match is always the result of the term being matched (whatever is on the right side of the match operator)
++ General behavior
++ two parts:
++ *pattern* (left side)
++ *term* (right side)
++ You assert your expectations about the right-side term. If these expectations aren’t met, an error is raised.
++ You bind some parts of the term to variables from the pattern.
+&lt;/code>&lt;/pre>
+&lt;ul>
+&lt;li>Matching with functions&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> my_fun(arg1, arg2) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ `arg1` and `arg2` are patterns
++ the arguments you provide are matched against the patterns specified in the function definition
++ Multiclause functions
++ A clause is a function definition specified by the def expression
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">Geometry&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> area({&lt;span style="color:#e6db74">:rectangle&lt;/span>, a, b}) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> a&lt;span style="color:#f92672">*&lt;/span>b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> area({&lt;span style="color:#e6db74">:square&lt;/span>, a}) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> a&lt;span style="color:#f92672">*&lt;/span>a
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> area({&lt;span style="color:#e6db74">:circle&lt;/span>, r}) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> r &lt;span style="color:#f92672">*&lt;/span> r &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">3.14&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + clause order is matter, the runtime tries to select the clauses, using the order in the source code
++ Guards
++ The guard is a logical expression that adds further conditions to the pattern
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">TestNum&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> test(x) &lt;span style="color:#f92672">when&lt;/span> x &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">:negative&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> test(x) &lt;span style="color:#f92672">when&lt;/span> x &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">:zero&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> test(x) &lt;span style="color:#f92672">when&lt;/span> x &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">:positive&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + operators and functions allowed in guards
++ Comparison operators (=\=, !=, =\&lt;mark>
+, !
+&lt;/mark>, &amp;gt;, &amp;lt;, &amp;lt;=, and &amp;gt;=)
++ Boolean operators (and and or) and negation operators (not and !)
++ Arithmetic operators (+, -, *, and /)
++ Type-check functions from the Kernel module (e.g., is_number/1, is_atom/1, and so on)
++ https://hexdocs.pm/elixir/patterns-and-guards.html#guards
++ when error raised inside guard, it won't propagate, guard expression will return `false`. The corresponding clause won’t match, but some other clause might
++ Multiclause lambdas
++ general lambda syntax
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pattern_1, pattern_2 &lt;span style="color:#f92672">-&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pattern_3, pattern_4 &lt;span style="color:#f92672">-&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>3&lt;span style="color:#f92672">)&lt;/span>&amp;gt; test_num &lt;span style="color:#f92672">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>fn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x when is_number&lt;span style="color:#f92672">(&lt;/span>x&lt;span style="color:#f92672">)&lt;/span> and x &amp;lt; &lt;span style="color:#ae81ff">0&lt;/span> -&amp;gt; :negative
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x when x &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> -&amp;gt; :zero
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x when is_number&lt;span style="color:#f92672">(&lt;/span>x&lt;span style="color:#f92672">)&lt;/span> and x &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span> -&amp;gt; :positive
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>end
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>Conditionals&lt;/p></description></item><item><title>Chapter 4</title><link>https://al002.github.io/pages/chapter-4/</link><pubDate>Thu, 02 Jan 2025 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-4/</guid><description>&lt;p>Basic principles of abstraction in Elixir&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>A module is in charge of abstracting some behavior.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The module’s functions usually expect an instance of the abstraction as the first
+argument.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Modifier functions return a modified version of the abstraction.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Query functions return some other type of data.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Abstracting with modules&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">TodoList&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> add_entry(todo_list, entry) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> entry &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">Map&lt;/span>&lt;span style="color:#f92672">.&lt;/span>put(entry, &lt;span style="color:#e6db74">:id&lt;/span>, todo_list&lt;span style="color:#f92672">.&lt;/span>next_id)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_entries &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">Map&lt;/span>&lt;span style="color:#f92672">.&lt;/span>put(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> todo_list&lt;span style="color:#f92672">.&lt;/span>entries,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> todo_list&lt;span style="color:#f92672">.&lt;/span>next_id,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> entry
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> %&lt;span style="color:#a6e22e">TodoList&lt;/span>{todo_list &lt;span style="color:#f92672">|&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">entries&lt;/span>: new_entries,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">next_id&lt;/span>: todo_list&lt;span style="color:#f92672">.&lt;/span>next_id &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ The entire operation will be atomic
++ This is the consequence of immutability. The effect of adding an entry is visible to others only when the `add_entry/2` function finishes and its result is taken into a variable. If something goes wrong and you raise an error, the effect of any transformations won’t be visible
+&lt;/code>&lt;/pre>
+&lt;p>Polymorphism with protocols&lt;/p></description></item><item><title>Chapter 5</title><link>https://al002.github.io/pages/chapter-5/</link><pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-5/</guid><description>&lt;p>Concurrency primitives&lt;/p>
+&lt;ul>
+&lt;li>Creating processes&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>iex(&lt;span style="color:#ae81ff">1&lt;/span>)&lt;span style="color:#f92672">&amp;gt;&lt;/span> run_query &lt;span style="color:#f92672">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">fn&lt;/span> query_def &lt;span style="color:#f92672">-&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Process&lt;/span>&lt;span style="color:#f92672">.&lt;/span>sleep(&lt;span style="color:#ae81ff">2000&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">#{&lt;/span>query_def&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> result&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>spawn(&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#f92672">-&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> expression_1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> expression_n
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex(&lt;span style="color:#ae81ff">4&lt;/span>)&lt;span style="color:#f92672">&amp;gt;&lt;/span> spawn(&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#f92672">-&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> query_result &lt;span style="color:#f92672">=&lt;/span> run_query&lt;span style="color:#f92672">.&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;query 1&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">IO&lt;/span>&lt;span style="color:#f92672">.&lt;/span>puts(query_result)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#PID&amp;lt;0.48.0&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>query &lt;span style="color:#ae81ff">1&lt;/span> result &lt;span style="color:#75715e"># Printed after 2 seconds&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex(&lt;span style="color:#ae81ff">5&lt;/span>)&lt;span style="color:#f92672">&amp;gt;&lt;/span> async_query &lt;span style="color:#f92672">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">fn&lt;/span> query_def &lt;span style="color:#f92672">-&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> spawn(&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#f92672">-&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> query_result &lt;span style="color:#f92672">=&lt;/span> run_query&lt;span style="color:#f92672">.&lt;/span>(query_def)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">IO&lt;/span>&lt;span style="color:#f92672">.&lt;/span>puts(query_result)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex(&lt;span style="color:#ae81ff">6&lt;/span>)&lt;span style="color:#f92672">&amp;gt;&lt;/span> async_query&lt;span style="color:#f92672">.&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;query 1&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#PID&amp;lt;0.52.0&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>query &lt;span style="color:#ae81ff">1&lt;/span> result &lt;span style="color:#75715e"># 2 senconds later&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex(&lt;span style="color:#ae81ff">7&lt;/span>)&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#a6e22e">Enum&lt;/span>&lt;span style="color:#f92672">.&lt;/span>each(&lt;span style="color:#ae81ff">1&lt;/span>&lt;span style="color:#f92672">..&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>, &lt;span style="color:#f92672">&amp;amp;&lt;/span>async_query&lt;span style="color:#f92672">.&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;query &lt;/span>&lt;span style="color:#e6db74">#{&lt;/span>&amp;amp;1&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">:ok&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>query &lt;span style="color:#ae81ff">1&lt;/span> result
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>query &lt;span style="color:#ae81ff">2&lt;/span> result
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>query &lt;span style="color:#ae81ff">3&lt;/span> result
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>query &lt;span style="color:#ae81ff">4&lt;/span> result
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>query &lt;span style="color:#ae81ff">5&lt;/span> result &lt;span style="color:#75715e"># 2 seconds later&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>Message passing&lt;/p></description></item><item><title>Chapter 6</title><link>https://al002.github.io/pages/chapter-6/</link><pubDate>Tue, 31 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-6/</guid><description>&lt;p>Generic server processes&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>start&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>init&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>handle_call&lt;/code> is synchronous request&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>handle_cast&lt;/code> is asynchronous request&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>handle_info&lt;/code> handle plain messages, not specific to &lt;code>GenServer&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>callback function execute in server process&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Plugging into GenServer&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">KeyValueStore&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">use&lt;/span> &lt;span style="color:#a6e22e">GenServer&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ `use` macro
++ During compilation, when this instruction is encountered, the specific macro from the `GenServer` module is invoked. That macro then injects several functions into the calling module
++ use `@impl GenServer` to tells the compiler that the function about to be defined is a callback function for the GenServer behaviour
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">EchoServer&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">use&lt;/span> &lt;span style="color:#a6e22e">GenServer&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@impl&lt;/span> &lt;span style="color:#a6e22e">GenServer&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> handle_call(some_request, server_state) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {&lt;span style="color:#e6db74">:reply&lt;/span>, some_request, server_state}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ name registration
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">GenServer&lt;/span>&lt;span style="color:#f92672">.&lt;/span>start(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">CallbackModule&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> init_param,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">name&lt;/span>: &lt;span style="color:#e6db74">:some_name&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># During compilation, __MODULE__ is replaced with the name of the module where the code resides:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">KeyValueStore&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> start() &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">GenServer&lt;/span>&lt;span style="color:#f92672">.&lt;/span>start(__MODULE__, &lt;span style="color:#66d9ef">nil&lt;/span>, &lt;span style="color:#e6db74">name&lt;/span>: __MODULE__)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> put(key, value) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">GenServer&lt;/span>&lt;span style="color:#f92672">.&lt;/span>cast(__MODULE__, {&lt;span style="color:#e6db74">:put&lt;/span>, key, value})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ `{:stop, reason}` or `:ignore` to stop server process
++ `handle_call` return `{:stop, reason, response, new_state}`
+&lt;/code>&lt;/pre>
+&lt;ul>
+&lt;li>Process lifecycle&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img loading="lazy" src="https://al002.github.io/assets/2025-01-02_17-04-10_1735808663443_0.png" alt="2025-01-02_17-04-10.png" />
+&lt;/p></description></item><item><title>Chapter 7</title><link>https://al002.github.io/pages/chapter-7/</link><pubDate>Mon, 30 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-7/</guid><description>&lt;p>Mix project conventions&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>place module under a common top-level alias&lt;/p>
+&lt;ul>
+&lt;li>like &lt;code>Todo.List&lt;/code>, &lt;code>Todo.Server&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>one file, one module&lt;/p>
+&lt;ul>
+&lt;li>except small helper module or protocol implementation for the module&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>filename should be an underscore-case&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>TodoServer&lt;/code> module would reside in &lt;code>todo_server.ex&lt;/code> file in the lib folder&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>The folder structure should correspond to multipart module names&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>Todo.Server&lt;/code> should reside in the &lt;code>lib/todo/server.ex&lt;/code> file&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>Addressing the process bottleneck&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>use process considerations&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The code must manage a long-living state&lt;/p></description></item><item><title>Chapter 8</title><link>https://al002.github.io/pages/chapter-8/</link><pubDate>Sun, 29 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-8/</guid><description>&lt;p>Runtime errors&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>error types&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>errors, exits, and throws&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>error&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;pre tabindex="0">&lt;code>raise(&amp;#34;Something went wrong&amp;#34;)
+** (RuntimeError) Something went wrong
+&lt;/code>&lt;/pre>&lt;pre>&lt;code>+ exit
+&lt;/code>&lt;/pre>
+&lt;pre tabindex="0">&lt;code>iex(2)&amp;gt; spawn(fn -&amp;gt;
+exit(&amp;#34;I&amp;#39;m done&amp;#34;)
+IO.puts(&amp;#34;This doesn&amp;#39;t happen&amp;#34;)
+end)
+&lt;/code>&lt;/pre>&lt;pre>&lt;code>+ throws
+&lt;/code>&lt;/pre>
+&lt;pre tabindex="0">&lt;code>iex(3)&amp;gt; throw(:thrown_value)
+** (throw) :thrown_value
+&lt;/code>&lt;/pre>&lt;ul>
+&lt;li>Handling errors&lt;/li>
+&lt;/ul>
+&lt;pre tabindex="0">&lt;code>try do
+...
+catch error_type, error_value -&amp;gt;
+...
+end
+&lt;/code>&lt;/pre>&lt;pre>&lt;code>+ `catch` blocks are patterns
++ tail call isn’t possible if the function call resides in a `try` expression
+&lt;/code>&lt;/pre>
+&lt;ul>
+&lt;li>
+&lt;p>A run-time error has a type, which can be :error, :exit, or :throw&lt;/p></description></item><item><title>Chapter 9</title><link>https://al002.github.io/pages/chapter-9/</link><pubDate>Sat, 28 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-9/</guid><description>&lt;p>Use &lt;code>Registry&lt;/code> to register process and then discover it&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; Registry.start_link&lt;span style="color:#f92672">(&lt;/span>name: :my_registry, keys: :unique&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>2&lt;span style="color:#f92672">)&lt;/span>&amp;gt; spawn&lt;span style="color:#f92672">(&lt;/span>fn -&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Registry.register&lt;span style="color:#f92672">(&lt;/span>:my_registry, &lt;span style="color:#f92672">{&lt;/span>:database_worker, 1&lt;span style="color:#f92672">}&lt;/span>, nil&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> receive &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg -&amp;gt; IO.puts&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;got message #{inspect(msg)}&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> end
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>end&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>3&lt;span style="color:#f92672">)&lt;/span>&amp;gt; &lt;span style="color:#f92672">[{&lt;/span>db_worker_pid, _value&lt;span style="color:#f92672">}]&lt;/span> &lt;span style="color:#f92672">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Registry.lookup&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> :my_registry,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">{&lt;/span>:database_worker, 1&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>4&lt;span style="color:#f92672">)&lt;/span>&amp;gt; send&lt;span style="color:#f92672">(&lt;/span>db_worker_pid, :some_message&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>got message :some_message
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Via tuples&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>allows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>GenServer.start_link(callback_module, some_arg, name: some_name)&lt;/code>&lt;/p></description></item><item><title>Chapter 10</title><link>https://al002.github.io/pages/chapter-10/</link><pubDate>Fri, 27 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-10/</guid><description>&lt;p>Tasks&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The Task module can be used to concurrently run a job&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Awaited tasks&lt;/p>
+&lt;ul>
+&lt;li>An awaited task is a process that executes some function, sends the function result back to the starter process, and then terminates&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; long_job &lt;span style="color:#f92672">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fn -&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Process.sleep&lt;span style="color:#f92672">(&lt;/span>2000&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> :some_result
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> end
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>2&lt;span style="color:#f92672">)&lt;/span>&amp;gt; task &lt;span style="color:#f92672">=&lt;/span> Task.async&lt;span style="color:#f92672">(&lt;/span>long_job&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># await will wait response from the task process&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># default 5 seconds to timeout&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>3&lt;span style="color:#f92672">)&lt;/span>&amp;gt; Task.await&lt;span style="color:#f92672">(&lt;/span>task&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>:some_result
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ if any task process crashes, the starter process will crash too
++ `Task.async/1` has all-or-nothing semantics
+&lt;/code>&lt;/pre>
+&lt;ul>
+&lt;li>Non-awaited tasks&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; Task.start_link&lt;span style="color:#f92672">(&lt;/span>fn -&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Process.sleep&lt;span style="color:#f92672">(&lt;/span>1000&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> IO.puts&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Hello from task&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>end&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>:ok, &lt;span style="color:#75715e">#PID&amp;lt;0.89.0&amp;gt;} # Result of Task.start_link/1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Hello from task! &lt;span style="color:#75715e"># Printed 1 second later&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Supervising dynamic tasks&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>1&lt;span style="color:#f92672">)&lt;/span>&amp;gt; Task.Supervisor.start_link&lt;span style="color:#f92672">(&lt;/span>name: MyTaskSupervisor&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>2&lt;span style="color:#f92672">)&lt;/span>&amp;gt; Task.Supervisor.start_child&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> MyTaskSupervisor,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fn -&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> IO.puts&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Task started&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Process.sleep&lt;span style="color:#f92672">(&lt;/span>2000&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> IO.puts&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Task stopping&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> end
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>:ok, &lt;span style="color:#75715e">#PID&amp;lt;0.118.0&amp;gt;}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Task started
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Task stopping
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Agents&lt;/p></description></item><item><title>Chapter 11</title><link>https://al002.github.io/pages/chapter-11/</link><pubDate>Thu, 26 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-11/</guid><description>&lt;p>OTP applications&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>An OTP application is a component that consists of multiple modules and that can depend on other applications&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>When the application is started, the function &lt;code>HelloWorld.Application.start/2&lt;/code> is called&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">defmodule&lt;/span> &lt;span style="color:#a6e22e">HelloWorld.Application&lt;/span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">use&lt;/span> &lt;span style="color:#a6e22e">Application&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> start(_type, _args) &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> children &lt;span style="color:#f92672">=&lt;/span> []
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> opts &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">strategy&lt;/span>: &lt;span style="color:#e6db74">:one_for_one&lt;/span>, &lt;span style="color:#e6db74">name&lt;/span>: &lt;span style="color:#a6e22e">HelloWorld.Supervisor&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Supervisor&lt;/span>&lt;span style="color:#f92672">.&lt;/span>start_link(children, opts)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>Starting the application&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>start the application in the running BEAM instance&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>call &lt;code>Application.start/1&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>verifies whether all the applications you’re depending on are started&lt;/p></description></item><item><title>Chapter 12</title><link>https://al002.github.io/pages/chapter-12/</link><pubDate>Wed, 25 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-12/</guid><description>&lt;p>Distribution primitives&lt;/p>
+&lt;ul>
+&lt;li>Starting a cluster&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>$ iex --sname node1@localhost
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>1&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Node.connect&lt;span style="color:#f92672">(&lt;/span>:node2@localhost&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster
++ list all nodes in a cluster, including the current ont
++ `Node.list([:this, :visible])`
+&lt;/code>&lt;/pre>
+&lt;ul>
+&lt;li>
+&lt;p>Communicating between nodes&lt;/p>
+&lt;ul>
+&lt;li>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>4&amp;gt; Node.spawn&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> :node2@localhost,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fn -&amp;gt; IO.puts&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Hello from #{node()}&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> end
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Hello from node2@localhost
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + lambda run in node2
++ send messages to process
++ location transparency
++ send messages to process, regardless of their location
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>5&amp;gt; caller &lt;span style="color:#f92672">=&lt;/span> self&lt;span style="color:#f92672">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>6&amp;gt; Node.spawn&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> :node2@localhost,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fn -&amp;gt; send&lt;span style="color:#f92672">(&lt;/span>caller, &lt;span style="color:#f92672">{&lt;/span>:response, 1+2&lt;span style="color:#f92672">})&lt;/span> end
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>7&amp;gt; flush&lt;span style="color:#f92672">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>:response, 3&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + Whatever works in one BEAM instance will work across different instances
++ except lambda
++ you can use the same registered name on different nodes
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>8&amp;gt; Process.register&lt;span style="color:#f92672">(&lt;/span>self&lt;span style="color:#f92672">()&lt;/span>, :shell&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>true
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node2@localhost&lt;span style="color:#f92672">)&lt;/span>3&amp;gt; Process.register&lt;span style="color:#f92672">(&lt;/span>self&lt;span style="color:#f92672">()&lt;/span>, :shell&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>true
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># send from node1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>9&amp;gt; send&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">{&lt;/span>:shell, :node2@localhost&lt;span style="color:#f92672">}&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;Hello from node1!&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node2@localhost&lt;span style="color:#f92672">)&lt;/span>4&amp;gt; flush&lt;span style="color:#f92672">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;Hello from node1!&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code>+ Process discovery
++ `Registry` isn’t cluster aware and works only in the scope of a local node
++ `:global`
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>10&amp;gt; :global.register_name&lt;span style="color:#f92672">({&lt;/span>:todo_list, &lt;span style="color:#e6db74">&amp;#34;bob&amp;#34;&lt;/span>&lt;span style="color:#f92672">}&lt;/span>, self&lt;span style="color:#f92672">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>:yes
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node2@localhost&lt;span style="color:#f92672">)&lt;/span>6&amp;gt; :global.whereis_name&lt;span style="color:#f92672">({&lt;/span>:todo_list, &lt;span style="color:#e6db74">&amp;#34;bob&amp;#34;&lt;/span>&lt;span style="color:#f92672">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#PID&amp;lt;7954.90.0&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-elixir" data-lang="elixir">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">GenServer&lt;/span>&lt;span style="color:#f92672">.&lt;/span>start_link(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> __MODULE__,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> arg,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">name&lt;/span>: {&lt;span style="color:#e6db74">:global&lt;/span>, some_global_alias}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">GenServer&lt;/span>&lt;span style="color:#f92672">.&lt;/span>call({&lt;span style="color:#e6db74">:global&lt;/span>, some_global_alias}, ...)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + groups of process
++ register several processes under the same alias
++ `pg` module
++ https://www.erlang.org/doc/man/pg.html
+&lt;/code>&lt;/pre>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>1&amp;gt; :pg.start_link&lt;span style="color:#f92672">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node2@localhost&lt;span style="color:#f92672">)&lt;/span>1&amp;gt; Node.connect&lt;span style="color:#f92672">(&lt;/span>:node1@localhost&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node2@localhost&lt;span style="color:#f92672">)&lt;/span>2&amp;gt; :pg.start_link&lt;span style="color:#f92672">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>2&amp;gt; :pg.join&lt;span style="color:#f92672">({&lt;/span>:todo_list, &lt;span style="color:#e6db74">&amp;#34;bob&amp;#34;&lt;/span>&lt;span style="color:#f92672">}&lt;/span>, self&lt;span style="color:#f92672">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>:ok
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node2@localhost&lt;span style="color:#f92672">)&lt;/span>3&amp;gt; :pg.join&lt;span style="color:#f92672">({&lt;/span>:todo_list, &lt;span style="color:#e6db74">&amp;#34;bob&amp;#34;&lt;/span>&lt;span style="color:#f92672">}&lt;/span>, self&lt;span style="color:#f92672">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>:ok
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node1@localhost&lt;span style="color:#f92672">)&lt;/span>3&amp;gt; :pg.get_members&lt;span style="color:#f92672">({&lt;/span>:todo_list, &lt;span style="color:#e6db74">&amp;#34;bob&amp;#34;&lt;/span>&lt;span style="color:#f92672">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>&lt;span style="color:#75715e">#PID&amp;lt;8531.90.0&amp;gt;, #PID&amp;lt;0.90.0&amp;gt;]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>iex&lt;span style="color:#f92672">(&lt;/span>node2@localhost&lt;span style="color:#f92672">)&lt;/span>4&amp;gt; :pg.get_members&lt;span style="color:#f92672">({&lt;/span>:todo_list, &lt;span style="color:#e6db74">&amp;#34;bob&amp;#34;&lt;/span>&lt;span style="color:#f92672">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>&lt;span style="color:#75715e">#PID&amp;lt;0.90.0&amp;gt;, #PID&amp;lt;7954.90.0&amp;gt;]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre>&lt;code> + Links and monitors work even if processes reside on different nodes
++ `:rpc` module to call a function on remote node and get its result
++ Message passing is the core distribution primitive
+&lt;/code>&lt;/pre>
+&lt;p>Network considerations&lt;/p></description></item><item><title>Chapter 13</title><link>https://al002.github.io/pages/chapter-13/</link><pubDate>Tue, 24 Dec 2024 00:00:00 +0000</pubDate><guid>https://al002.github.io/pages/chapter-13/</guid><description>&lt;p>OTP releases&lt;/p>
+&lt;ul>
+&lt;li>An OTP release is a standalone, compiled, runnable system that consists of the minimum set of OTP applications needed by the system&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>$ mix release
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>* assembling todo-0.1.0 on MIX_ENV&lt;span style="color:#f92672">=&lt;/span>dev
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>* using config/runtime.exs to configure the release at runtime
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Release created at _build/dev/rel/todo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Using a release&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># start in the foreground with `iex` shell&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ RELEASE_NODE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;todo@localhost&amp;#34;&lt;/span> _build/prod/rel/todo/bin/todo start_iex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># start in the background&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>RELEASE_NODE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;todo@localhost&amp;#34;&lt;/span> _build/prod/rel/todo/bin/todo daemon
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Analyzing system behavior&lt;/p></description></item></channel></rss>

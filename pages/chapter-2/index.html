@@ -1,0 +1,687 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Chapter 2 | Elixir in action notes</title>
+<meta name=keywords content><meta name=description content='Organizing code
+
+
+Modules
+
+A module is a collection of functions, somewhat like a namespace
+
+
+
+defmodule Geometry do
+  def rectangle_area(a, b) do
+  	a*b
+  end
+end
+
+Functions
+
+def rectangle_area(a, b) do
+	...
+end
+def rectangle_area(a, b), do: a * b
++ Arity
+
+
+  + the number of arguments a function receives
+
+  + A function is uniquely identified by its containing module, name, and arity
+
+  + Rectangle.area/2, where /2 denotes the function’s arity.
+
+  + same name but different arities are two different functions
+
+  + commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments
+
+  + `\\` operator followed by the argument’s default value
+
+defmodule Calculator do
+	def add(a, b \\ 0), do: a + b
+end
+    + generates two functions
+
+defmodule Calculator do
+  def add(a), do: add(a, 0)
+  def add(a, b), do: a+b
+end
+  + cannot accept a variable number of arguments
+
++ Visibility
+
+
+  + `def` macro is `exported`
+
+  + `defp` macro is private
+
+    + can be used only inside the module it’s defined in
+
+
+Imports and alias
+
+# Import
+
+defmodule MyModule do
+  import IO
+
+  def my_function do
+  	puts "Calling imported function."
+  end
+end
++ Importing a module allows to call its public functions without prefixing them with the module name
+
+# Alias
+
+defmodule MyModule do
+  alias IO, as: MyIO
+
+  def my_function do
+  	MyIO.puts("Calling imported function.")
+  end
+end
+
+defmodule MyModule do
+  alias Geometry.Rectangle, as: Rectangle
+  
+  def my_function do
+  	Rectangle.area(...)
+  end
+end
+
+
+Module attributes'><meta name=author content><link rel=canonical href=https://al002.github.io/pages/chapter-2/><link crossorigin=anonymous href=/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as=style><link rel=icon href=https://al002.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://al002.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://al002.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://al002.github.io/apple-touch-icon.png><link rel=mask-icon href=https://al002.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://al002.github.io/pages/chapter-2/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="Chapter 2"><meta property="og:description" content='Organizing code
+
+
+Modules
+
+A module is a collection of functions, somewhat like a namespace
+
+
+
+defmodule Geometry do
+  def rectangle_area(a, b) do
+  	a*b
+  end
+end
+
+Functions
+
+def rectangle_area(a, b) do
+	...
+end
+def rectangle_area(a, b), do: a * b
++ Arity
+
+
+  + the number of arguments a function receives
+
+  + A function is uniquely identified by its containing module, name, and arity
+
+  + Rectangle.area/2, where /2 denotes the function’s arity.
+
+  + same name but different arities are two different functions
+
+  + commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments
+
+  + `\\` operator followed by the argument’s default value
+
+defmodule Calculator do
+	def add(a, b \\ 0), do: a + b
+end
+    + generates two functions
+
+defmodule Calculator do
+  def add(a), do: add(a, 0)
+  def add(a, b), do: a+b
+end
+  + cannot accept a variable number of arguments
+
++ Visibility
+
+
+  + `def` macro is `exported`
+
+  + `defp` macro is private
+
+    + can be used only inside the module it’s defined in
+
+
+Imports and alias
+
+# Import
+
+defmodule MyModule do
+  import IO
+
+  def my_function do
+  	puts "Calling imported function."
+  end
+end
++ Importing a module allows to call its public functions without prefixing them with the module name
+
+# Alias
+
+defmodule MyModule do
+  alias IO, as: MyIO
+
+  def my_function do
+  	MyIO.puts("Calling imported function.")
+  end
+end
+
+defmodule MyModule do
+  alias Geometry.Rectangle, as: Rectangle
+  
+  def my_function do
+  	Rectangle.area(...)
+  end
+end
+
+
+Module attributes'><meta property="og:type" content="article"><meta property="og:url" content="https://al002.github.io/pages/chapter-2/"><meta property="article:section" content="pages"><meta property="article:published_time" content="2025-01-04T00:00:00+00:00"><meta property="article:modified_time" content="2025-01-04T00:00:00+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Chapter 2"><meta name=twitter:description content='Organizing code
+
+
+Modules
+
+A module is a collection of functions, somewhat like a namespace
+
+
+
+defmodule Geometry do
+  def rectangle_area(a, b) do
+  	a*b
+  end
+end
+
+Functions
+
+def rectangle_area(a, b) do
+	...
+end
+def rectangle_area(a, b), do: a * b
++ Arity
+
+
+  + the number of arguments a function receives
+
+  + A function is uniquely identified by its containing module, name, and arity
+
+  + Rectangle.area/2, where /2 denotes the function’s arity.
+
+  + same name but different arities are two different functions
+
+  + commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments
+
+  + `\\` operator followed by the argument’s default value
+
+defmodule Calculator do
+	def add(a, b \\ 0), do: a + b
+end
+    + generates two functions
+
+defmodule Calculator do
+  def add(a), do: add(a, 0)
+  def add(a, b), do: a+b
+end
+  + cannot accept a variable number of arguments
+
++ Visibility
+
+
+  + `def` macro is `exported`
+
+  + `defp` macro is private
+
+    + can be used only inside the module it’s defined in
+
+
+Imports and alias
+
+# Import
+
+defmodule MyModule do
+  import IO
+
+  def my_function do
+  	puts "Calling imported function."
+  end
+end
++ Importing a module allows to call its public functions without prefixing them with the module name
+
+# Alias
+
+defmodule MyModule do
+  alias IO, as: MyIO
+
+  def my_function do
+  	MyIO.puts("Calling imported function.")
+  end
+end
+
+defmodule MyModule do
+  alias Geometry.Rectangle, as: Rectangle
+  
+  def my_function do
+  	Rectangle.area(...)
+  end
+end
+
+
+Module attributes'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Pages","item":"https://al002.github.io/pages/"},{"@type":"ListItem","position":2,"name":"Chapter 2","item":"https://al002.github.io/pages/chapter-2/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Chapter 2","name":"Chapter 2","description":"Organizing code\nModules\nA module is a collection of functions, somewhat like a namespace defmodule Geometry do def rectangle_area(a, b) do a*b end end Functions def rectangle_area(a, b) do ... end def rectangle_area(a, b), do: a * b + Arity + the number of arguments a function receives + A function is uniquely identified by its containing module, name, and arity + Rectangle.area/2, where /2 denotes the function’s arity. + same name but different arities are two different functions + commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments + `\\\\` operator followed by the argument’s default value defmodule Calculator do def add(a, b \\\\ 0), do: a + b end + generates two functions defmodule Calculator do def add(a), do: add(a, 0) def add(a, b), do: a+b end + cannot accept a variable number of arguments + Visibility + `def` macro is `exported` + `defp` macro is private + can be used only inside the module it’s defined in Imports and alias # Import defmodule MyModule do import IO def my_function do puts \u0026#34;Calling imported function.\u0026#34; end end + Importing a module allows to call its public functions without prefixing them with the module name # Alias defmodule MyModule do alias IO, as: MyIO def my_function do MyIO.puts(\u0026#34;Calling imported function.\u0026#34;) end end defmodule MyModule do alias Geometry.Rectangle, as: Rectangle def my_function do Rectangle.area(...) end end Module attributes\n","keywords":[],"articleBody":"Organizing code\nModules\nA module is a collection of functions, somewhat like a namespace defmodule Geometry do def rectangle_area(a, b) do a*b end end Functions def rectangle_area(a, b) do ... end def rectangle_area(a, b), do: a * b + Arity + the number of arguments a function receives + A function is uniquely identified by its containing module, name, and arity + Rectangle.area/2, where /2 denotes the function’s arity. + same name but different arities are two different functions + commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments + `\\\\` operator followed by the argument’s default value defmodule Calculator do def add(a, b \\\\ 0), do: a + b end + generates two functions defmodule Calculator do def add(a), do: add(a, 0) def add(a, b), do: a+b end + cannot accept a variable number of arguments + Visibility + `def` macro is `exported` + `defp` macro is private + can be used only inside the module it’s defined in Imports and alias # Import defmodule MyModule do import IO def my_function do puts \"Calling imported function.\" end end + Importing a module allows to call its public functions without prefixing them with the module name # Alias defmodule MyModule do alias IO, as: MyIO def my_function do MyIO.puts(\"Calling imported function.\") end end defmodule MyModule do alias Geometry.Rectangle, as: Rectangle def my_function do Rectangle.area(...) end end Module attributes\nused as compile-time constants defmodule Circle do @pi 3.14159 def area(r), do: r*r*@pi def circumference(r), do: 2*r*@pi end + attribute can be registered + stored in the generated binary + can be accessed at run time + @module, @doc defmodule Circle do @moduledoc \"Implements basic circle functions\" @pi 3.14159 @doc \"Computes the area of a circle\" def area(r), do: r*r*@pi @doc \"Computes the circumference of a circle\" def circumference(r), do: 2*r*@pi end + Type specification (typespecs) + provide type information for functions defmodule Circle do @pi 3.14159 @spec area(number) :: number def area(r), do: r*r*@pi @spec circumference(number) :: number def circumference(r), do: 2*r*@pi end Type system\nNumbers\ncan be integers or floats\noperator / always returns a float\nAtoms\nliterally named constants :an_atom + consists of `text` and `value` + `text` is what ever after colon character `:` + At runtime, `text` kept in the `atom table` + `value` is data goes into the variable variable = :some_atom + it’s a reference to the atom table + `variable` not contain entire text, but a reference to `atom table` + memory consumption is low + comparisons is fast + code is readable + Aliases + Omit the beginning colon + Start with an uppercase character AnAtom + transformed into `:\"Elixir.AnAtom\" iex(1)\u003e AnAtom == :\"Elixir.AnAtom\" true + implicit add `Elixir` prefix + if an alias already contains `Elixir`, prefix is not added iex(2)\u003e AnAtom == Elixir.AnAtom true + Module aliases alias IO, as: MyIO + `MyIO` should transformed into `IO` + `IO` is atom + transformed into `Elixir.IO` iex(5)\u003e MyIO == Elixir.IO true + As booleans + `:true` `true` + `:false` `false` + nil + `:nil` + `nil` + `nil` and `false` is falsy value, everything else is truthy + If all expressions evaluate to a falsy value, the result of the _last expression_ is returned. + Tuples iex(1)\u003e person = {\"Bob\", 25} {\"Bob\", 25} iex(3)\u003e put_elem(person, 1, 26) {\"Bob\", 26} + appropriate for grouping a small, fixed number of elements together + Lists + manage dynamic, variable-sized collections of data iex(1)\u003e prime_numbers = [2, 3, 5, 7] [2, 3, 5, 7] + work like singly linked lists + most of the operations on lists have an O(n) complexity + include `Kernel.length/1` function + Immutability + modifying tuples + always a complete, shallow copy of the old versioin + modifying list + shallow copies of the first n – 1 elements followed by the modified element. After that, the tails are completely shared + benefits + side-effect-free functions and data consistency + Maps iex(1)\u003e empty_map = %{} iex(2)\u003e squares = %{1 =\u003e 1, 2 =\u003e 4, 3 =\u003e 9} iex(3)\u003e squares = Map.new([{1, 1}, {2, 4}, {3, 9}]) %{1 =\u003e 1, 2 =\u003e 4, 3 =\u003e 9} + + Binaries and bitstrings iex(1)\u003e \u003c\u003c1, 2, 3\u003e\u003e \u003c\u003c1, 2, 3\u003e\u003e iex(2)\u003e \u003c\u003c256\u003e\u003e \u003c\u003c0\u003e\u003e iex(5)\u003e \u003c\u003c257::16\u003e\u003e \u003c\u003c1, 1\u003e\u003e + bitstring + total size of all the values isn’t a multiple of 8 iex(7)\u003e \u003c\u003c1::1, 0::1, 1::1\u003e\u003e \u003c\u003c5::size(3)\u003e\u003e + concat bitstring iex(8)\u003e \u003c\u003c1, 2\u003e\u003e \u003c\u003e \u003c\u003c3, 4\u003e\u003e \u003c\u003c1, 2, 3, 4\u003e\u003e + Strings + Strings are represented using either a binary or a list type + Binary string iex(1)\u003e \"This is a string\" \"This is a string\" iex(2)\u003e \"Embedded expression: #{3 + 0.14}\" \"Embedded expression: 3.14\" + sigils syntax iex(5)\u003e ~s(This is also a string) \"This is also a string\" iex(6)\u003e ~s(\"Do... or do not. There is no try.\" -Master Yoda) \"\\\"Do... or do not. There is no try.\\\" -Master Yoda\" iex(7)\u003e ~S(Not interpolated #{3 + 0.14}) \"Not interpolated \\#{3 + 0.14}\" + + Character lists iex(1)\u003e IO.puts([65, 66, 67]) ABC # ~c sigil iex(2)\u003e IO.puts(~c\"ABC\") ABC # single quote iex(3)\u003e IO.puts('ABC') ABC + better use `~c` sigil + charlist not compatible with binary string + some functions work only with character lists + pure Erlang library + `String.to_charlist/1` convert a binary string to charlist + prefer binary string + Functions square = fn x -\u003e x*x end Enum.each( [1, 2, 3], fn x -\u003e IO.puts(x) end ) Enum.each( [1, 2, 3], \u0026IO.puts/1 ) iex(7)\u003e lambda = fn x, y, z -\u003e x * y + z end iex(8)\u003e lambda = \u0026(\u00261 * \u00262 + \u00263) + Closures + by holding a reference to a lambda, you indirectly hold a reference to all variables it uses, even if those variables are from the external scope + Higher-level types + Range + It's enumerable iex(1)\u003e range = 1..2 + represented as a map + memory footprint is small and constant + Keyword + Special case of a list + each element is a two-element tuple + first is atom + second can be of any type iex(1)\u003e days = [{:monday, 1}, {:tuesday, 2}, {:wednesday, 3}] iex(2)\u003e days = [monday: 1, tuesday: 2, wednesday: 3] + Allows you to omit the square brackets if the last argument is a keyword list iex(8)\u003e IO.inspect([100, 200, 300], width: 3, limit: 1) [100, ...] + MapSet + The implementation of a set + store of unique values iex(1)\u003e days = MapSet.new([:monday, :tuesday, :wednesday]) MapSet.new([:monday, :tuesday, :wednesday]) + Times and dates # Date iex(1)\u003e date = ~D[2023-01-31] ~D[2023-01-31] iex(2)\u003e date.year 2023 iex(3)\u003e date.month 1 # Time iex(1)\u003e time = ~T[11:59:12.00007] # NativDateTime iex(1)\u003e naive_datetime = ~N[2023-01-31 11:59:12.000007] # DateTime, work with datetimes and supports time zones iex(1)\u003e datetime = ~U[2023-01-31 11:59:12.000007Z] + DateTime + IO lists + Special sort of list that’s useful for incrementally building output that will be forwarded to an I/O device\n+ Element must one of following + An integer in the range of 0 to 255 + A binary + An IO list iex(1)\u003e iolist = [[[~c\"He\"], \"llo,\"], \" worl\", \"d!\"] + appending to an IO list is O(1) because you can use nesting iex(3)\u003e iolist = [] iolist = [iolist, \"This\"] iolist = [iolist, \" is\"] iolist = [iolist, \" an\"] iolist = [iolist, \" IO list.\"] + Operators\n| Operator | Decription | | \\ =, ! | Strict equality/inequality | | ==,!= | Weak equality/inequality | | \u003c, \u003e, \u003e=, \u003c= | Less than, greater than, less than or equal, greater than or equal | Macros\nperform powerful code transformations at compile time unless some_expression do block_1 else block_2 end # tranform to if some_expression do block_2 else block_1 end Understanding the runtime\nWhen start runtime, an OS process for the BEAM instance is started\nVM keeps track of all modules loaded in-memory\nIf module is not loaded\ntries to find the compiled module file—the bytecode—on the disk Module name is alias correspond to :\"Elixir:ModuleName\"\nGeometry correspond to :\"Elixir.Geometry\"\nelixirc generate .beam file\nmultiple module in one file, elixirc will generate multiple .beam file When call function of a module\nThe VM looks for the file in the current folder and then in the code paths\ncode path are used: :code.get_path\nErlang module use simple filenames\n:code.get_path\nxyz.beam\nxyz is the expanded form of an alias\nElixir.MyModule when the module is named MyModule Dynamically calling functions\niex(1)\u003e apply(IO, :puts, [\"Dynamic function call.\"]) Dynamic function call. + Starting the runtime + interactive shell + `iex` + shell is *interprets* input, not performant as compiled code + but modules are always compiled + running scripts + `elixir mys_ource.ex` + The BEAM instance is started. + The file my_source.ex is compiled in-memory, and the resulting modules are loaded to the VM. No .beam file is generated on the disk. + Whatever code resides outside of a module is interpreted. + Once everything is finished, BEAM is stopped. + `--no halt` make BEAM instance not to terminate + the `mix` tool + Whenever you need to build a production-ready system, mix is your best option. + ","wordCount":"1501","inLanguage":"en","datePublished":"2025-01-04T00:00:00Z","dateModified":"2025-01-04T00:00:00Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://al002.github.io/pages/chapter-2/"},"publisher":{"@type":"Organization","name":"Elixir in action notes","logo":{"@type":"ImageObject","url":"https://al002.github.io/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://al002.github.io/ accesskey=h title="Elixir in action notes (Alt + H)">Elixir in action notes</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">Chapter 2</h1><div class=post-meta><span title='2025-01-04 00:00:00 +0000 UTC'>January 4, 2025</span></div></header><div class=post-content><p>Organizing code</p><ul><li><p>Modules</p><ul><li>A module is a collection of functions, somewhat like a namespace</li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Geometry</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> rectangle_area(a, b) <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  	a<span style=color:#f92672>*</span>b
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><ul><li>Functions</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>def</span> rectangle_area(a, b) <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>	...
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>def</span> rectangle_area(a, b), <span style=color:#e6db74>do</span>: a <span style=color:#f92672>*</span> b
+</span></span></code></pre></div><pre><code>+ Arity
+
+
+  + the number of arguments a function receives
+
+  + A function is uniquely identified by its containing module, name, and arity
+
+  + Rectangle.area/2, where /2 denotes the function’s arity.
+
+  + same name but different arities are two different functions
+
+  + commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments
+
+  + `\\` operator followed by the argument’s default value
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Calculator</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>def</span> add(a, b \\ <span style=color:#ae81ff>0</span>), <span style=color:#e6db74>do</span>: a <span style=color:#f92672>+</span> b
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><pre><code>    + generates two functions
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Calculator</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> add(a), <span style=color:#e6db74>do</span>: add(a, <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> add(a, b), <span style=color:#e6db74>do</span>: a<span style=color:#f92672>+</span>b
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><pre><code>  + cannot accept a variable number of arguments
+
++ Visibility
+
+
+  + `def` macro is `exported`
+
+  + `defp` macro is private
+
+    + can be used only inside the module it’s defined in
+</code></pre><ul><li>Imports and alias</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#75715e># Import</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>MyModule</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>import</span> <span style=color:#a6e22e>IO</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> my_function <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  	puts <span style=color:#e6db74>&#34;Calling imported function.&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><pre><code>+ Importing a module allows to call its public functions without prefixing them with the module name
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#75715e># Alias</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>MyModule</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>alias</span> <span style=color:#a6e22e>IO</span>, <span style=color:#e6db74>as</span>: <span style=color:#a6e22e>MyIO</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> my_function <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  	<span style=color:#a6e22e>MyIO</span><span style=color:#f92672>.</span>puts(<span style=color:#e6db74>&#34;Calling imported function.&#34;</span>)
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>MyModule</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>alias</span> <span style=color:#a6e22e>Geometry.Rectangle</span>, <span style=color:#e6db74>as</span>: <span style=color:#a6e22e>Rectangle</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> my_function <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  	<span style=color:#a6e22e>Rectangle</span><span style=color:#f92672>.</span>area(...)
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><ul><li><p>Module attributes</p><ul><li>used as compile-time constants</li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Circle</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@pi</span> <span style=color:#ae81ff>3.14159</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> area(r), <span style=color:#e6db74>do</span>: r<span style=color:#f92672>*</span>r<span style=color:#f92672>*</span><span style=color:#a6e22e>@pi</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> circumference(r), <span style=color:#e6db74>do</span>: <span style=color:#ae81ff>2</span><span style=color:#f92672>*</span>r<span style=color:#f92672>*</span><span style=color:#a6e22e>@pi</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><pre><code>+ attribute can be registered
+
+  + stored in the generated binary
+
+  + can be accessed at run time
+
+  + @module, @doc
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Circle</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@moduledoc</span> <span style=color:#e6db74>&#34;Implements basic circle functions&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@pi</span> <span style=color:#ae81ff>3.14159</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@doc</span> <span style=color:#e6db74>&#34;Computes the area of a circle&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> area(r), <span style=color:#e6db74>do</span>: r<span style=color:#f92672>*</span>r<span style=color:#f92672>*</span><span style=color:#a6e22e>@pi</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@doc</span> <span style=color:#e6db74>&#34;Computes the circumference of a circle&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> circumference(r), <span style=color:#e6db74>do</span>: <span style=color:#ae81ff>2</span><span style=color:#f92672>*</span>r<span style=color:#f92672>*</span><span style=color:#a6e22e>@pi</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><pre><code>  + Type specification (typespecs)
+
+    + provide type information for functions
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Circle</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@pi</span> <span style=color:#ae81ff>3.14159</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@spec</span> area(number) <span style=color:#f92672>::</span> number
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> area(r), <span style=color:#e6db74>do</span>: r<span style=color:#f92672>*</span>r<span style=color:#f92672>*</span><span style=color:#a6e22e>@pi</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>@spec</span> circumference(number) <span style=color:#f92672>::</span> number
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> circumference(r), <span style=color:#e6db74>do</span>: <span style=color:#ae81ff>2</span><span style=color:#f92672>*</span>r<span style=color:#f92672>*</span><span style=color:#a6e22e>@pi</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><ul><li><p>Type system</p><ul><li><p>Numbers</p><ul><li><p>can be integers or floats</p></li><li><p>operator <code>/</code> always returns a float</p></li></ul></li><li><p>Atoms</p><ul><li>literally named constants</li></ul></li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#e6db74>:an_atom</span>
+</span></span></code></pre></div><pre><code>  + consists of `text` and `value`
+
+    + `text` is what ever after colon character `:`
+
+      + At runtime, `text` kept in the `atom table`
+
+    + `value` is data goes into the variable
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span>variable <span style=color:#f92672>=</span> <span style=color:#e6db74>:some_atom</span>
+</span></span></code></pre></div><pre><code>      + it’s a reference to the atom table
+
+      + `variable` not contain entire text, but a reference to `atom table`
+
+      + memory consumption is low
+
+      + comparisons is fast
+
+      + code is readable
+
+  + Aliases
+
+    + Omit the beginning colon
+
+    + Start with an uppercase character
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#a6e22e>AnAtom</span>
+</span></span></code></pre></div><pre><code>    + transformed into `:&quot;Elixir.AnAtom&quot;
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; AnAtom <span style=color:#f92672>==</span> :<span style=color:#e6db74>&#34;Elixir.AnAtom&#34;</span>
+</span></span><span style=display:flex><span>true
+</span></span></code></pre></div><pre><code>    + implicit add `Elixir` prefix
+
+      + if an alias already contains `Elixir`, prefix is not added
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>&gt; AnAtom <span style=color:#f92672>==</span> Elixir.AnAtom
+</span></span><span style=display:flex><span>true
+</span></span></code></pre></div><pre><code>    + Module aliases
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#f92672>alias</span> <span style=color:#a6e22e>IO</span>, <span style=color:#e6db74>as</span>: <span style=color:#a6e22e>MyIO</span>
+</span></span></code></pre></div><pre><code>        + `MyIO` should transformed into `IO`
+
+        + `IO` is atom
+
+          + transformed into `Elixir.IO`
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>5<span style=color:#f92672>)</span>&gt; MyIO <span style=color:#f92672>==</span> Elixir.IO
+</span></span><span style=display:flex><span>true
+</span></span></code></pre></div><pre><code>    + As booleans
+
+      + `:true` `true`
+
+      + `:false` `false`
+
+    + nil
+
+      + `:nil`
+
+      + `nil`
+
+      + `nil` and `false` is falsy value, everything else is truthy
+
+      + If all expressions evaluate to a falsy value, the result of the _last expression_ is returned.
+
++ Tuples
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; person <span style=color:#f92672>=</span> <span style=color:#f92672>{</span><span style=color:#e6db74>&#34;Bob&#34;</span>, 25<span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span><span style=color:#e6db74>&#34;Bob&#34;</span>, 25<span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>&gt; put_elem<span style=color:#f92672>(</span>person, 1, 26<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span><span style=color:#e6db74>&#34;Bob&#34;</span>, 26<span style=color:#f92672>}</span>
+</span></span></code></pre></div><pre><code>  + appropriate for grouping a small, fixed number of elements together
+
++ Lists
+
+  + manage dynamic, variable-sized collections of data
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; prime_numbers <span style=color:#f92672>=</span> <span style=color:#f92672>[</span>2, 3, 5, 7<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>2, 3, 5, 7<span style=color:#f92672>]</span>
+</span></span></code></pre></div><pre><code>  + work like singly linked lists
+
+  + most of the operations on lists have an O(n) complexity
+
+    + include `Kernel.length/1` function
+
++ Immutability
+
+
+  + modifying tuples
+
+    + always a complete, shallow copy of the old versioin
+
+  + modifying list
+
+    + shallow copies of the first n – 1 elements followed by the modified element. After that, the tails are completely shared
+
+  + benefits
+
+    + side-effect-free functions and data consistency
+
++ Maps
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span>iex(<span style=color:#ae81ff>1</span>)<span style=color:#f92672>&gt;</span> empty_map <span style=color:#f92672>=</span> %{}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex(<span style=color:#ae81ff>2</span>)<span style=color:#f92672>&gt;</span> squares <span style=color:#f92672>=</span> %{<span style=color:#ae81ff>1</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>3</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>9</span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex(<span style=color:#ae81ff>3</span>)<span style=color:#f92672>&gt;</span> squares <span style=color:#f92672>=</span> <span style=color:#a6e22e>Map</span><span style=color:#f92672>.</span>new([{<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1</span>}, {<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>4</span>}, {<span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>9</span>}])
+</span></span><span style=display:flex><span>%{<span style=color:#ae81ff>1</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>3</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>9</span>}
+</span></span></code></pre></div><pre><code>  + 
+
++ Binaries and bitstrings
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; <span style=color:#e6db74>&lt;&lt;1, 2, 3&gt;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&lt;&lt;1</span>, 2, 3&gt;&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>&gt; <span style=color:#e6db74>&lt;&lt;256&gt;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&lt;&lt;0&gt;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>iex(5)&gt; &lt;&lt;25</span>7::16&gt;&gt;
+</span></span><span style=display:flex><span><span style=color:#e6db74>&lt;&lt;1, 1</span>&gt;&gt;
+</span></span></code></pre></div><pre><code>  + bitstring
+
+    + total size of all the values isn’t a multiple of 8
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>7<span style=color:#f92672>)</span>&gt; <span style=color:#e6db74>&lt;&lt;1::1</span>, 0::1, 1::1&gt;&gt;
+</span></span><span style=display:flex><span>&lt;&lt;5::size<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>&gt;&gt;
+</span></span></code></pre></div><pre><code>    + concat bitstring
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>8<span style=color:#f92672>)</span>&gt; <span style=color:#e6db74>&lt;&lt;1, 2&gt;&gt; &lt;&gt; &lt;&lt;3, 4&gt;&gt;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&lt;&lt;1</span>, 2, 3, 4&gt;&gt;
+</span></span></code></pre></div><pre><code>+ Strings
+
+  + Strings are represented using either a binary or a list type
+
+  + Binary string
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; <span style=color:#e6db74>&#34;This is a string&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;This is a string&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>&gt; <span style=color:#e6db74>&#34;Embedded expression: #{3 + 0.14}&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;Embedded expression: 3.14&#34;</span>
+</span></span></code></pre></div><pre><code>    + sigils syntax
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>5<span style=color:#f92672>)</span>&gt; ~s<span style=color:#f92672>(</span>This is also a string<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;This is also a string&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>&gt; ~s<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Do... or do not. There is no try.&#34;</span> -Master Yoda<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;\&#34;Do... or do not. There is no try.\&#34; -Master Yoda&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>7<span style=color:#f92672>)</span>&gt; ~S<span style=color:#f92672>(</span>Not interpolated <span style=color:#75715e>#{3 + 0.14})</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;Not interpolated \#{3 + 0.14}&#34;</span>
+</span></span></code></pre></div><pre><code>      + 
+
+  + Character lists
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; IO.puts<span style=color:#f92672>([</span>65, 66, 67<span style=color:#f92672>])</span>
+</span></span><span style=display:flex><span>ABC
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># ~c sigil</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>&gt; IO.puts<span style=color:#f92672>(</span>~c<span style=color:#e6db74>&#34;ABC&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>ABC
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># single quote</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>&gt; IO.puts<span style=color:#f92672>(</span><span style=color:#e6db74>&#39;ABC&#39;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>ABC
+</span></span></code></pre></div><pre><code>    + better use `~c` sigil
+
+    + charlist not compatible with binary string
+
+      + some functions work only with character lists
+
+        + pure Erlang library
+
+        + `String.to_charlist/1` convert a binary string to charlist
+
+    + prefer binary string
+
++ Functions
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span>square <span style=color:#f92672>=</span> <span style=color:#66d9ef>fn</span> x <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>	x<span style=color:#f92672>*</span>x
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>Enum</span><span style=color:#f92672>.</span>each(
+</span></span><span style=display:flex><span>  [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>],
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>fn</span> x <span style=color:#f92672>-&gt;</span> <span style=color:#a6e22e>IO</span><span style=color:#f92672>.</span>puts(x) <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>Enum</span><span style=color:#f92672>.</span>each(
+</span></span><span style=display:flex><span>  [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>],
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>IO</span><span style=color:#f92672>.</span>puts<span style=color:#f92672>/</span><span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex(<span style=color:#ae81ff>7</span>)<span style=color:#f92672>&gt;</span> lambda <span style=color:#f92672>=</span> <span style=color:#66d9ef>fn</span> x, y, z <span style=color:#f92672>-&gt;</span> x <span style=color:#f92672>*</span> y <span style=color:#f92672>+</span> z <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex(<span style=color:#ae81ff>8</span>)<span style=color:#f92672>&gt;</span> lambda <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>(&amp;1 <span style=color:#f92672>*</span> &amp;2 <span style=color:#f92672>+</span> &amp;3)
+</span></span></code></pre></div><pre><code>  + Closures
+
+    + by holding a reference to a lambda, you indirectly hold a reference to all variables it uses, even if those variables are from the external scope
+
++ Higher-level types
+
+
+  + Range
+
+
+    + It's enumerable
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; range <span style=color:#f92672>=</span> 1..2
+</span></span></code></pre></div><pre><code>    + represented as a map
+
+      + memory footprint is small and constant
+
+  + Keyword
+
+    + Special case of a list
+
+
+      + each element is a two-element tuple
+
+
+        + first is atom
+
+        + second can be of any type
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; days <span style=color:#f92672>=</span> <span style=color:#f92672>[{</span>:monday, 1<span style=color:#f92672>}</span>, <span style=color:#f92672>{</span>:tuesday, 2<span style=color:#f92672>}</span>, <span style=color:#f92672>{</span>:wednesday, 3<span style=color:#f92672>}]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>&gt; days <span style=color:#f92672>=</span> <span style=color:#f92672>[</span>monday: 1, tuesday: 2, wednesday: 3<span style=color:#f92672>]</span>
+</span></span></code></pre></div><pre><code>    + Allows you to omit the square brackets if the last argument is a keyword list
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>8<span style=color:#f92672>)</span>&gt; IO.inspect<span style=color:#f92672>([</span>100, 200, 300<span style=color:#f92672>]</span>, width: 3, limit: 1<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>100,
+</span></span><span style=display:flex><span>...<span style=color:#f92672>]</span>
+</span></span></code></pre></div><pre><code>  + MapSet
+
+    + The implementation of a set
+
+      + store of unique values
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; days <span style=color:#f92672>=</span> MapSet.new<span style=color:#f92672>([</span>:monday, :tuesday, :wednesday<span style=color:#f92672>])</span>
+</span></span><span style=display:flex><span>MapSet.new<span style=color:#f92672>([</span>:monday, :tuesday, :wednesday<span style=color:#f92672>])</span>
+</span></span></code></pre></div><pre><code>  + Times and dates
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Date</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; date <span style=color:#f92672>=</span> ~D<span style=color:#f92672>[</span>2023-01-31<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>~D<span style=color:#f92672>[</span>2023-01-31<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>&gt; date.year
+</span></span><span style=display:flex><span><span style=color:#ae81ff>2023</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>&gt; date.month
+</span></span><span style=display:flex><span><span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Time</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; time <span style=color:#f92672>=</span> ~T<span style=color:#f92672>[</span>11:59:12.00007<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># NativDateTime</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; naive_datetime <span style=color:#f92672>=</span> ~N<span style=color:#f92672>[</span>2023-01-31 11:59:12.000007<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># DateTime, work with datetimes and supports time zones</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; datetime <span style=color:#f92672>=</span> ~U<span style=color:#f92672>[</span>2023-01-31 11:59:12.000007Z<span style=color:#f92672>]</span>
+</span></span></code></pre></div><pre><code>  + DateTime
+
++ IO lists
+
+
+  + Special sort of list that’s useful for incrementally building output that
+</code></pre><p>will be forwarded to an I/O device</p><pre><code>  + Element must one of following
+
+    + An integer in the range of 0 to 255
+
+    + A binary
+
+    + An IO list
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; iolist <span style=color:#f92672>=</span> <span style=color:#f92672>[[[</span>~c<span style=color:#e6db74>&#34;He&#34;</span><span style=color:#f92672>]</span>, <span style=color:#e6db74>&#34;llo,&#34;</span><span style=color:#f92672>]</span>, <span style=color:#e6db74>&#34; worl&#34;</span>, <span style=color:#e6db74>&#34;d!&#34;</span><span style=color:#f92672>]</span>
+</span></span></code></pre></div><pre><code>  + appending to an IO list is O(1) because you can use nesting
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>&gt; iolist <span style=color:#f92672>=</span> <span style=color:#f92672>[]</span>
+</span></span><span style=display:flex><span>iolist <span style=color:#f92672>=</span> <span style=color:#f92672>[</span>iolist, <span style=color:#e6db74>&#34;This&#34;</span><span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>iolist <span style=color:#f92672>=</span> <span style=color:#f92672>[</span>iolist, <span style=color:#e6db74>&#34; is&#34;</span><span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>iolist <span style=color:#f92672>=</span> <span style=color:#f92672>[</span>iolist, <span style=color:#e6db74>&#34; an&#34;</span><span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>iolist <span style=color:#f92672>=</span> <span style=color:#f92672>[</span>iolist, <span style=color:#e6db74>&#34; IO list.&#34;</span><span style=color:#f92672>]</span> 
+</span></span></code></pre></div><pre><code>  + 
+</code></pre><ul><li><p>Operators</p><ul><li>| Operator | Decription |
+| \<mark>
+=, !
+</mark>| Strict equality/inequality |
+| ==,!= | Weak equality/inequality |
+| &lt;, >, >=, &lt;= | Less than, greater than, less than or equal, greater than or equal |</li></ul></li><li><p>Macros</p><ul><li>perform powerful code transformations at compile time</li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>unless</span> some_expression <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  block_1
+</span></span><span style=display:flex><span><span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>  block_2
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># tranform to</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> some_expression <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  block_2
+</span></span><span style=display:flex><span><span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>  block_1
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><ul><li><p>Understanding the runtime</p><ul><li><p>When start runtime, an OS process for the BEAM instance is started</p></li><li><p>VM keeps track of all modules loaded in-memory</p><ul><li><p>If module is not loaded</p><ul><li>tries to find the compiled module file—the bytecode—on the disk</li></ul></li></ul></li><li><p>Module name is alias correspond to <code>:"Elixir:ModuleName"</code></p><ul><li><p><code>Geometry</code> correspond to <code>:"Elixir.Geometry"</code></p></li><li><p><code>elixirc</code> generate <code>.beam</code> file</p><ul><li>multiple module in one file, <code>elixirc</code> will generate multiple <code>.beam</code> file</li></ul></li><li><p>When call function of a module</p><ul><li><p>The VM looks for the file in the current folder and then in the code paths</p></li><li><p>code path are used: <code>:code.get_path</code></p></li></ul></li></ul></li><li><p>Erlang module use simple filenames</p><ul><li><p><code>:code.get_path</code></p></li><li><p><code>xyz.beam</code></p><ul><li><p><code>xyz</code> is the expanded form of an alias</p><ul><li><code>Elixir.MyModule</code> when the module is named <code>MyModule</code></li></ul></li></ul></li></ul></li><li><p>Dynamically calling functions</p></li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; apply<span style=color:#f92672>(</span>IO, :puts, <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;Dynamic function call.&#34;</span><span style=color:#f92672>])</span>
+</span></span><span style=display:flex><span>Dynamic <span style=color:#66d9ef>function</span> call.
+</span></span></code></pre></div><pre><code>+ Starting the runtime
+
+  + interactive shell
+
+    + `iex`
+
+    + shell is *interprets* input, not performant as compiled code
+
+    + but modules are always compiled
+
+  + running scripts
+
+    + `elixir mys_ource.ex`
+
+    + The BEAM instance is started.
+
+    + The file my_source.ex is compiled in-memory, and the resulting modules are loaded to the VM. No .beam file is generated on the disk.
+
+    + Whatever code resides outside of a module is interpreted.
+
+    + Once everything is finished, BEAM is stopped.
+
+    + `--no halt` make BEAM instance not to terminate
+
+  + the `mix` tool
+
+    + Whenever you need to build a production-ready system, mix is your best option.
+
+  + 
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://al002.github.io/>Elixir in action notes</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

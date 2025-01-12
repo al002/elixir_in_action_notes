@@ -1,0 +1,131 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Chapter 9 | Elixir in action notes</title>
+<meta name=keywords content><meta name=description content='Use Registry to register process and then discover it
+iex(1)> Registry.start_link(name: :my_registry, keys: :unique)
+
+iex(2)> spawn(fn ->
+  Registry.register(:my_registry, {:database_worker, 1}, nil)
+  receive do
+    msg -> IO.puts("got message #{inspect(msg)}")
+  end
+end)
+
+iex(3)> [{db_worker_pid, _value}] =
+Registry.lookup(
+  :my_registry,
+  {:database_worker, 1}
+)
+
+iex(4)> send(db_worker_pid, :some_message)
+got message :some_message
+Via tuples
+
+
+allows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors
+
+
+GenServer.start_link(callback_module, some_arg, name: some_name)'><meta name=author content><link rel=canonical href=https://al002.github.io/pages/chapter-9/><link crossorigin=anonymous href=/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as=style><link rel=icon href=https://al002.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://al002.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://al002.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://al002.github.io/apple-touch-icon.png><link rel=mask-icon href=https://al002.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://al002.github.io/pages/chapter-9/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="Chapter 9"><meta property="og:description" content='Use Registry to register process and then discover it
+iex(1)> Registry.start_link(name: :my_registry, keys: :unique)
+
+iex(2)> spawn(fn ->
+  Registry.register(:my_registry, {:database_worker, 1}, nil)
+  receive do
+    msg -> IO.puts("got message #{inspect(msg)}")
+  end
+end)
+
+iex(3)> [{db_worker_pid, _value}] =
+Registry.lookup(
+  :my_registry,
+  {:database_worker, 1}
+)
+
+iex(4)> send(db_worker_pid, :some_message)
+got message :some_message
+Via tuples
+
+
+allows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors
+
+
+GenServer.start_link(callback_module, some_arg, name: some_name)'><meta property="og:type" content="article"><meta property="og:url" content="https://al002.github.io/pages/chapter-9/"><meta property="article:section" content="pages"><meta property="article:published_time" content="2024-12-28T00:00:00+00:00"><meta property="article:modified_time" content="2025-01-05T00:00:00+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Chapter 9"><meta name=twitter:description content='Use Registry to register process and then discover it
+iex(1)> Registry.start_link(name: :my_registry, keys: :unique)
+
+iex(2)> spawn(fn ->
+  Registry.register(:my_registry, {:database_worker, 1}, nil)
+  receive do
+    msg -> IO.puts("got message #{inspect(msg)}")
+  end
+end)
+
+iex(3)> [{db_worker_pid, _value}] =
+Registry.lookup(
+  :my_registry,
+  {:database_worker, 1}
+)
+
+iex(4)> send(db_worker_pid, :some_message)
+got message :some_message
+Via tuples
+
+
+allows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors
+
+
+GenServer.start_link(callback_module, some_arg, name: some_name)'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Pages","item":"https://al002.github.io/pages/"},{"@type":"ListItem","position":2,"name":"Chapter 9","item":"https://al002.github.io/pages/chapter-9/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Chapter 9","name":"Chapter 9","description":"Use Registry to register process and then discover it\niex(1)\u0026gt; Registry.start_link(name: :my_registry, keys: :unique) iex(2)\u0026gt; spawn(fn -\u0026gt; Registry.register(:my_registry, {:database_worker, 1}, nil) receive do msg -\u0026gt; IO.puts(\u0026#34;got message #{inspect(msg)}\u0026#34;) end end) iex(3)\u0026gt; [{db_worker_pid, _value}] = Registry.lookup( :my_registry, {:database_worker, 1} ) iex(4)\u0026gt; send(db_worker_pid, :some_message) got message :some_message Via tuples\nallows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors\nGenServer.start_link(callback_module, some_arg, name: some_name)\n","keywords":[],"articleBody":"Use Registry to register process and then discover it\niex(1)\u003e Registry.start_link(name: :my_registry, keys: :unique) iex(2)\u003e spawn(fn -\u003e Registry.register(:my_registry, {:database_worker, 1}, nil) receive do msg -\u003e IO.puts(\"got message #{inspect(msg)}\") end end) iex(3)\u003e [{db_worker_pid, _value}] = Registry.lookup( :my_registry, {:database_worker, 1} ) iex(4)\u003e send(db_worker_pid, :some_message) got message :some_message Via tuples\nallows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors\nGenServer.start_link(callback_module, some_arg, name: some_name)\n:name option can also be provided in the shape of {:via, some_module, some_arg}. Such a tuple is also called a via tuple defmodule Todo.ProcessRegistry do def start_link do Registry.start_link(keys: :unique, name: __MODULE__) end def via_tuple(key) do {:via, Registry, {__MODULE__, key}} end def child_spec(_) do Supervisor.child_spec( Registry, id: __MODULE__, start: {__MODULE__, :start_link, []} ) end end Supervision tree\na nested structure of supervisors and workers\ndescribes how the system is started and how it’s taken down\nThis is how error recovery works in supervision trees—you try to recover from an error locally, affecting as few processes as possible. If that doesn’t work, you move up and try to restart the wider part of the system\nOTP-compliant processes\nhttps://www.erlang.org/doc/design_principles/spec_proc.html#special-processes. Avoid process restarting\nrestart: :temporary in child_spec/1\nrestart: :transient in child_spec/1\nrestarted only if it terminates abnormally Restart strategies\n:one_for_one\na supervisor handles a process termination by starting a new process in its place, leaving other children alone :one_for_all\nWhen a child crashes, the supervisor terminates all other children and then starts all children :rest_for_one\nWhen a child crashes, the supervisor terminates all younger siblings of the crashed child. Then, the supervisor starts new child processes in place of the terminated ones\nyounger siblings means process which after crashed process in the supervisor childrens\nStarting processes dynamically\nDynamicSupervisor defmodule Todo.Cache do def start_link() do IO.puts(\"Starting to-do cache.\") DynamicSupervisor.start_link( name: __MODULE__, strategy: :one_for_one ) end defp start_child(todo_list_name) do DynamicSupervisor.start_child( __MODULE__, {Todo.Server, todo_list_name} ) end ... end + `DynamicSupervisor.start_child/2` is a cross-process synchronous call Two important situations in which you should explicitly handle an error\nIn critical processes that shouldn’t crash\nWhen you expect an error that can be dealt with in a meaningful way\n","wordCount":"348","inLanguage":"en","datePublished":"2024-12-28T00:00:00Z","dateModified":"2025-01-05T00:00:00Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://al002.github.io/pages/chapter-9/"},"publisher":{"@type":"Organization","name":"Elixir in action notes","logo":{"@type":"ImageObject","url":"https://al002.github.io/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://al002.github.io/ accesskey=h title="Elixir in action notes (Alt + H)">Elixir in action notes</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">Chapter 9</h1><div class=post-meta><span title='2024-12-28 00:00:00 +0000 UTC'>December 28, 2024</span></div></header><div class=post-content><p>Use <code>Registry</code> to register process and then discover it</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; Registry.start_link<span style=color:#f92672>(</span>name: :my_registry, keys: :unique<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>&gt; spawn<span style=color:#f92672>(</span>fn -&gt;
+</span></span><span style=display:flex><span>  Registry.register<span style=color:#f92672>(</span>:my_registry, <span style=color:#f92672>{</span>:database_worker, 1<span style=color:#f92672>}</span>, nil<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>  receive <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>    msg -&gt; IO.puts<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;got message #{inspect(msg)}&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>  end
+</span></span><span style=display:flex><span>end<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>&gt; <span style=color:#f92672>[{</span>db_worker_pid, _value<span style=color:#f92672>}]</span> <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>Registry.lookup<span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>  :my_registry,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>{</span>:database_worker, 1<span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>4<span style=color:#f92672>)</span>&gt; send<span style=color:#f92672>(</span>db_worker_pid, :some_message<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>got message :some_message
+</span></span></code></pre></div><p>Via tuples</p><ul><li><p>allows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors</p></li><li><p><code>GenServer.start_link(callback_module, some_arg, name: some_name)</code></p><ul><li><code>:name</code> option can also be provided in the shape of <code>{:via, some_module, some_arg}</code>. Such a tuple is also called a via tuple</li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Todo.ProcessRegistry</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> start_link <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  	<span style=color:#a6e22e>Registry</span><span style=color:#f92672>.</span>start_link(<span style=color:#e6db74>keys</span>: <span style=color:#e6db74>:unique</span>, <span style=color:#e6db74>name</span>: __MODULE__)
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> via_tuple(key) <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  	{<span style=color:#e6db74>:via</span>, <span style=color:#a6e22e>Registry</span>, {__MODULE__, key}}
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> child_spec(_) <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>Supervisor</span><span style=color:#f92672>.</span>child_spec(
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>Registry</span>,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>id</span>: __MODULE__,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>start</span>: {__MODULE__, <span style=color:#e6db74>:start_link</span>, []}
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><p>Supervision tree</p><ul><li><p>a nested structure of supervisors and workers</p></li><li><p>describes how the system is started and how it’s taken down</p></li><li><p>This is how error recovery works in supervision trees—you try to recover from an error locally, affecting as few processes as possible. If that doesn’t work, you move up and try to restart the wider part of the system</p></li><li><p>OTP-compliant processes</p><ul><li><a href=https://www.erlang.org/doc/design_principles/spec_proc.html#special-processes>https://www.erlang.org/doc/design_principles/spec_proc.html#special-processes</a>.</li></ul></li><li><p>Avoid process restarting</p><ul><li><p><code>restart: :temporary</code> in <code>child_spec/1</code></p></li><li><p><code>restart: :transient</code> in <code>child_spec/1</code></p><ul><li>restarted only if it terminates abnormally</li></ul></li></ul></li><li><p>Restart strategies</p><ul><li><p><code>:one_for_one</code></p><ul><li>a supervisor handles a process termination by starting a new process in its place, leaving other children alone</li></ul></li><li><p><code>:one_for_all</code></p><ul><li>When a child crashes, the supervisor terminates all other children and then starts all children</li></ul></li><li><p><code>:rest_for_one</code></p><ul><li><p>When a child crashes, the supervisor terminates all younger siblings of the crashed child. Then, the supervisor starts new child processes in place of the terminated ones</p></li><li><p><code>younger siblings</code> means process which after crashed process in the supervisor childrens</p></li></ul></li></ul></li></ul><p>Starting processes dynamically</p><ul><li><code>DynamicSupervisor</code></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#66d9ef>defmodule</span> <span style=color:#a6e22e>Todo.Cache</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>def</span> start_link() <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>IO</span><span style=color:#f92672>.</span>puts(<span style=color:#e6db74>&#34;Starting to-do cache.&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>DynamicSupervisor</span><span style=color:#f92672>.</span>start_link(
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>name</span>: __MODULE__,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>strategy</span>: <span style=color:#e6db74>:one_for_one</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>defp</span> start_child(todo_list_name) <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>DynamicSupervisor</span><span style=color:#f92672>.</span>start_child(
+</span></span><span style=display:flex><span>      __MODULE__,
+</span></span><span style=display:flex><span>      {<span style=color:#a6e22e>Todo.Server</span>, todo_list_name}
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span>  ...
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>
+</span></span></code></pre></div><pre><code>+ `DynamicSupervisor.start_child/2` is a cross-process synchronous call
+</code></pre><p>Two important situations in which you should explicitly handle an error</p><ul><li><p>In critical processes that shouldn’t crash</p></li><li><p>When you expect an error that can be dealt with in a meaningful way</p></li></ul></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://al002.github.io/>Elixir in action notes</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

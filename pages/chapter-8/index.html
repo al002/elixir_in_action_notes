@@ -1,0 +1,215 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Chapter 8 | Elixir in action notes</title>
+<meta name=keywords content><meta name=description content='Runtime errors
+
+
+error types
+
+
+errors, exits, and throws
+
+
+error
+
+
+
+
+raise("Something went wrong")
+** (RuntimeError) Something went wrong
++ exit
+
+iex(2)> spawn(fn ->
+    exit("I&#39;m done")
+    IO.puts("This doesn&#39;t happen")
+  end)
++ throws
+
+iex(3)> throw(:thrown_value)
+** (throw) :thrown_value
+
+Handling errors
+
+try do
+  ...
+  catch error_type, error_value ->
+  ...
+end
++ `catch` blocks are patterns
+
++ tail call isn’t possible if the function call resides in a `try` expression
+
+
+
+A run-time error has a type, which can be :error, :exit, or :throw'><meta name=author content><link rel=canonical href=https://al002.github.io/pages/chapter-8/><link crossorigin=anonymous href=/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as=style><link rel=icon href=https://al002.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://al002.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://al002.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://al002.github.io/apple-touch-icon.png><link rel=mask-icon href=https://al002.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://al002.github.io/pages/chapter-8/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="Chapter 8"><meta property="og:description" content='Runtime errors
+
+
+error types
+
+
+errors, exits, and throws
+
+
+error
+
+
+
+
+raise("Something went wrong")
+** (RuntimeError) Something went wrong
++ exit
+
+iex(2)> spawn(fn ->
+    exit("I&#39;m done")
+    IO.puts("This doesn&#39;t happen")
+  end)
++ throws
+
+iex(3)> throw(:thrown_value)
+** (throw) :thrown_value
+
+Handling errors
+
+try do
+  ...
+  catch error_type, error_value ->
+  ...
+end
++ `catch` blocks are patterns
+
++ tail call isn’t possible if the function call resides in a `try` expression
+
+
+
+A run-time error has a type, which can be :error, :exit, or :throw'><meta property="og:type" content="article"><meta property="og:url" content="https://al002.github.io/pages/chapter-8/"><meta property="article:section" content="pages"><meta property="article:published_time" content="2024-12-29T00:00:00+00:00"><meta property="article:modified_time" content="2025-01-05T00:00:00+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Chapter 8"><meta name=twitter:description content='Runtime errors
+
+
+error types
+
+
+errors, exits, and throws
+
+
+error
+
+
+
+
+raise("Something went wrong")
+** (RuntimeError) Something went wrong
++ exit
+
+iex(2)> spawn(fn ->
+    exit("I&#39;m done")
+    IO.puts("This doesn&#39;t happen")
+  end)
++ throws
+
+iex(3)> throw(:thrown_value)
+** (throw) :thrown_value
+
+Handling errors
+
+try do
+  ...
+  catch error_type, error_value ->
+  ...
+end
++ `catch` blocks are patterns
+
++ tail call isn’t possible if the function call resides in a `try` expression
+
+
+
+A run-time error has a type, which can be :error, :exit, or :throw'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Pages","item":"https://al002.github.io/pages/"},{"@type":"ListItem","position":2,"name":"Chapter 8","item":"https://al002.github.io/pages/chapter-8/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Chapter 8","name":"Chapter 8","description":"Runtime errors\nerror types\nerrors, exits, and throws\nerror\nraise(\u0026#34;Something went wrong\u0026#34;) ** (RuntimeError) Something went wrong + exit iex(2)\u0026gt; spawn(fn -\u0026gt; exit(\u0026#34;I\u0026#39;m done\u0026#34;) IO.puts(\u0026#34;This doesn\u0026#39;t happen\u0026#34;) end) + throws iex(3)\u0026gt; throw(:thrown_value) ** (throw) :thrown_value Handling errors try do ... catch error_type, error_value -\u0026gt; ... end + `catch` blocks are patterns + tail call isn’t possible if the function call resides in a `try` expression A run-time error has a type, which can be :error, :exit, or :throw\n","keywords":[],"articleBody":"Runtime errors\nerror types\nerrors, exits, and throws\nerror\nraise(\"Something went wrong\") ** (RuntimeError) Something went wrong + exit iex(2)\u003e spawn(fn -\u003e exit(\"I'm done\") IO.puts(\"This doesn't happen\") end) + throws iex(3)\u003e throw(:thrown_value) ** (throw) :thrown_value Handling errors try do ... catch error_type, error_value -\u003e ... end + `catch` blocks are patterns + tail call isn’t possible if the function call resides in a `try` expression A run-time error has a type, which can be :error, :exit, or :throw\nA run-time error also has a value, which can be any arbitrary term\nIf a run-time error isn’t handled, the corresponding process will terminate\nErrors in concurrent systems\nLinking processes\nlinks\nIf two processes are linked, and one of them terminates, the other process receives an exit signal—a notification that a process has crashed\nalways bidirectional\nnormal termination\nexit reason is :normal spawn(fn -\u003e spawn_link(fn -\u003e Process.sleep(1000) IO.puts(\"Process 2 finished\") end) raise(\"Something went wrong\") end) + the crash of a single process will emit exit signals to all of its linked processes. If the default behavior isn’t overridden, those processes will crash as well. Ultimately, the entire tree of linked processes will be taken down + Trapping exits + `Process.flag(:trap_exit, true)` spawn(fn -\u003e Process.flag(:trap_exit, true) spawn_link(fn -\u003e raise(\"Something went wrong\") end) receive do msg -\u003e IO.inspect(msg) end end) Monitors\nunidirectional propagation of a process crash\nmonitor_ref = Process.monitor(target_pid)\nSupervisors\nmanages the life cycle of other processes in a system\nThe supervisor process traps exits and then starts the child processes\nIf, at any point in time, a child terminates, the supervisor process receives a corresponding exit message and performs corrective actions, such as restarting the crashed process.\nIf the supervisor process terminates, its children are also taken down\nSupervisor.start_link([Todo.Cache], strategy: :one_for_one) + Child specification + How should the child be started? + What should be done if the child terminates? + What term should be used to uniquely identify each child? + to-do cache specification %{ id: Todo.Cache, start: {Todo.Cache, :start_link, [nil]}, } Supervisor.start_link( [ %{ id: Todo.Cache, start: {Todo.Cache, :start_link, [nil]} } ], strategy: :one_for_one ) + `module_name.child_spec(arg)` return the module specification + The default implementation is injected by use GenServer Supervisor.start_link( [{Todo.Cache, nil}], strategy: :one_for_one ) iex(1)\u003e Todo.Cache.child_spec(nil) %{id: Todo.Cache, start: {Todo.Cache, :start_link, [nil]}} + When invoke `Supervisor.start_link(child_specs, options)` + The new process is started, powered by the Supervisor module + The supervisor process goes through the list of child specifications and starts each child, one by one + Each specification is resolved, if needed, by invoking child_spec/1 from the corresponding module + The supervisor starts the child process according to the :start field of the child specification + Restart frequency + Supervisor won’t restart a child process forever + By default, the maximum restart frequency is three restarts in 5 seconds + ","wordCount":"463","inLanguage":"en","datePublished":"2024-12-29T00:00:00Z","dateModified":"2025-01-05T00:00:00Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://al002.github.io/pages/chapter-8/"},"publisher":{"@type":"Organization","name":"Elixir in action notes","logo":{"@type":"ImageObject","url":"https://al002.github.io/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://al002.github.io/ accesskey=h title="Elixir in action notes (Alt + H)">Elixir in action notes</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">Chapter 8</h1><div class=post-meta><span title='2024-12-29 00:00:00 +0000 UTC'>December 29, 2024</span></div></header><div class=post-content><p>Runtime errors</p><ul><li><p>error types</p><ul><li><p>errors, exits, and throws</p></li><li><p>error</p></li></ul></li></ul><pre tabindex=0><code>raise(&#34;Something went wrong&#34;)
+** (RuntimeError) Something went wrong
+</code></pre><pre><code>+ exit
+</code></pre><pre tabindex=0><code>iex(2)&gt; spawn(fn -&gt;
+    exit(&#34;I&#39;m done&#34;)
+    IO.puts(&#34;This doesn&#39;t happen&#34;)
+  end)
+</code></pre><pre><code>+ throws
+</code></pre><pre tabindex=0><code>iex(3)&gt; throw(:thrown_value)
+** (throw) :thrown_value
+</code></pre><ul><li>Handling errors</li></ul><pre tabindex=0><code>try do
+  ...
+  catch error_type, error_value -&gt;
+  ...
+end
+</code></pre><pre><code>+ `catch` blocks are patterns
+
++ tail call isn’t possible if the function call resides in a `try` expression
+</code></pre><ul><li><p>A run-time error has a type, which can be :error, :exit, or :throw</p></li><li><p>A run-time error also has a value, which can be any arbitrary term</p></li><li><p>If a run-time error isn’t handled, the corresponding process will terminate</p></li></ul><p>Errors in concurrent systems</p><ul><li><p>Linking processes</p><ul><li><p><code>links</code></p><ul><li><p>If two processes are linked, and one of them terminates, the other process receives an exit signal—a notification that a process has crashed</p></li><li><p>always bidirectional</p></li></ul></li><li><p>normal termination</p><ul><li>exit reason is <code>:normal</code></li></ul></li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span>spawn(<span style=color:#66d9ef>fn</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>  spawn_link(<span style=color:#66d9ef>fn</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>Process</span><span style=color:#f92672>.</span>sleep(<span style=color:#ae81ff>1000</span>)
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>IO</span><span style=color:#f92672>.</span>puts(<span style=color:#e6db74>&#34;Process 2 finished&#34;</span>)
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>raise</span>(<span style=color:#e6db74>&#34;Something went wrong&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>)
+</span></span></code></pre></div><pre><code>+ the crash of a single process will emit exit signals to all of its linked processes. If the default behavior isn’t overridden, those processes will crash as well. Ultimately, the entire tree of linked processes will be taken down
+
++ Trapping exits
+
+  + `Process.flag(:trap_exit, true)`
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span>spawn(<span style=color:#66d9ef>fn</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>Process</span><span style=color:#f92672>.</span>flag(<span style=color:#e6db74>:trap_exit</span>, <span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>  spawn_link(<span style=color:#66d9ef>fn</span> <span style=color:#f92672>-&gt;</span> <span style=color:#66d9ef>raise</span>(<span style=color:#e6db74>&#34;Something went wrong&#34;</span>) <span style=color:#66d9ef>end</span>)
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>receive</span> <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>  	msg <span style=color:#f92672>-&gt;</span> <span style=color:#a6e22e>IO</span><span style=color:#f92672>.</span>inspect(msg)
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>end</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>end</span>)
+</span></span></code></pre></div><ul><li><p>Monitors</p><ul><li><p>unidirectional propagation of a process crash</p></li><li><p><code>monitor_ref = Process.monitor(target_pid)</code></p></li></ul></li><li><p>Supervisors</p><ul><li><p>manages the life cycle of other processes in a system</p></li><li><p>The supervisor process traps exits and then starts the child processes</p></li><li><p>If, at any point in time, a child terminates, the supervisor process receives a corresponding exit message and performs corrective actions, such as restarting the crashed process.</p></li><li><p>If the supervisor process terminates, its children are also taken down</p></li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#a6e22e>Supervisor</span><span style=color:#f92672>.</span>start_link([<span style=color:#a6e22e>Todo.Cache</span>], <span style=color:#e6db74>strategy</span>: <span style=color:#e6db74>:one_for_one</span>)
+</span></span></code></pre></div><pre><code>+ Child specification
+
+  + How should the child be started?
+
+  + What should be done if the child terminates?
+
+  + What term should be used to uniquely identify each child?
+
+  + to-do cache specification
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span>%{
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>id</span>: <span style=color:#a6e22e>Todo.Cache</span>,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>start</span>: {<span style=color:#a6e22e>Todo.Cache</span>, <span style=color:#e6db74>:start_link</span>, [<span style=color:#66d9ef>nil</span>]},
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#a6e22e>Supervisor</span><span style=color:#f92672>.</span>start_link(
+</span></span><span style=display:flex><span>  [
+</span></span><span style=display:flex><span>    %{
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>id</span>: <span style=color:#a6e22e>Todo.Cache</span>,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>start</span>: {<span style=color:#a6e22e>Todo.Cache</span>, <span style=color:#e6db74>:start_link</span>, [<span style=color:#66d9ef>nil</span>]}
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  ],
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>strategy</span>: <span style=color:#e6db74>:one_for_one</span>
+</span></span><span style=display:flex><span>)
+</span></span></code></pre></div><pre><code>  + `module_name.child_spec(arg)` return the module specification
+
+    + The default implementation is injected by use GenServer
+</code></pre><pre tabindex=0><code>Supervisor.start_link(
+  [{Todo.Cache, nil}],
+  strategy: :one_for_one
+)
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>&gt; Todo.Cache.child_spec<span style=color:#f92672>(</span>nil<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>%<span style=color:#f92672>{</span>id: Todo.Cache, start: <span style=color:#f92672>{</span>Todo.Cache, :start_link, <span style=color:#f92672>[</span>nil<span style=color:#f92672>]}}</span>
+</span></span></code></pre></div><pre><code>  + When invoke `Supervisor.start_link(child_specs, options)`
+
+
+    + The new process is started, powered by the Supervisor module
+
+    + The supervisor process goes through the list of child specifications and starts each child, one by one
+
+    + Each specification is resolved, if needed, by invoking child_spec/1 from the corresponding module
+
+    + The supervisor starts the child process according to the :start field of the child specification
+
++ Restart frequency
+
+  + Supervisor won’t restart a child process forever
+
+  + By default, the maximum restart frequency is three restarts in 5 seconds
+
++ 
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://al002.github.io/>Elixir in action notes</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

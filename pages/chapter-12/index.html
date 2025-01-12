@@ -1,0 +1,438 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Chapter 12 | Elixir in action notes</title>
+<meta name=keywords content><meta name=description content='Distribution primitives
+
+Starting a cluster
+
+$ iex --sname node1@localhost
+iex(node1@localhost)1>
+
+Node.connect(:node2@localhost)
++ Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster
+
++ list all nodes in a cluster, including the current ont
+
+  + `Node.list([:this, :visible])`
+
+
+
+Communicating between nodes
+
+
+
+
+
+iex(node1@localhost)4> Node.spawn(
+  :node2@localhost,
+  fn -> IO.puts("Hello from #{node()}") end
+)
+Hello from node2@localhost
+  + lambda run in node2
+
++ send messages to process
+
+
+  + location transparency
+
+    + send messages to process, regardless of their location
+
+iex(node1@localhost)5> caller = self()
+iex(node1@localhost)6> Node.spawn(
+  :node2@localhost,
+  fn -> send(caller, {:response, 1+2}) end
+)
+
+iex(node1@localhost)7> flush()
+{:response, 3}
+  + Whatever works in one BEAM instance will work across different instances
+
+    + except lambda
+
+  + you can use the same registered name on different nodes
+
+iex(node1@localhost)8> Process.register(self(), :shell)
+true
+iex(node2@localhost)3> Process.register(self(), :shell)
+true
+
+# send from node1
+iex(node1@localhost)9> send(
+  {:shell, :node2@localhost},
+  "Hello from node1!"
+)
+
+iex(node2@localhost)4> flush()
+"Hello from node1!"
++ Process discovery
+
+
+  + `Registry` isn’t cluster aware and works only in the scope of a local node
+
+  + `:global`
+
+iex(node1@localhost)10> :global.register_name({:todo_list, "bob"}, self())
+:yes
+
+iex(node2@localhost)6> :global.whereis_name({:todo_list, "bob"})
+#PID<7954.90.0>
+GenServer.start_link(
+  __MODULE__,
+  arg,
+  name: {:global, some_global_alias}
+)
+
+GenServer.call({:global, some_global_alias}, ...)
+  + groups of process
+
+    + register several processes under the same alias
+
+    + `pg` module
+
+      + https://www.erlang.org/doc/man/pg.html
+
+iex(node1@localhost)1> :pg.start_link()
+
+iex(node2@localhost)1> Node.connect(:node1@localhost)
+iex(node2@localhost)2> :pg.start_link()
+
+iex(node1@localhost)2> :pg.join({:todo_list, "bob"}, self())
+:ok
+iex(node2@localhost)3> :pg.join({:todo_list, "bob"}, self())
+:ok
+
+iex(node1@localhost)3> :pg.get_members({:todo_list, "bob"})
+[#PID<8531.90.0>, #PID<0.90.0>]
+iex(node2@localhost)4> :pg.get_members({:todo_list, "bob"})
+[#PID<0.90.0>, #PID<7954.90.0>]
+  + Links and monitors work even if processes reside on different nodes
+
++ `:rpc` module to call a function on remote node and get its result
+
++ Message passing is the core distribution primitive
+
+Network considerations'><meta name=author content><link rel=canonical href=https://al002.github.io/pages/chapter-12/><link crossorigin=anonymous href=/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as=style><link rel=icon href=https://al002.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://al002.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://al002.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://al002.github.io/apple-touch-icon.png><link rel=mask-icon href=https://al002.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://al002.github.io/pages/chapter-12/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="Chapter 12"><meta property="og:description" content='Distribution primitives
+
+Starting a cluster
+
+$ iex --sname node1@localhost
+iex(node1@localhost)1>
+
+Node.connect(:node2@localhost)
++ Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster
+
++ list all nodes in a cluster, including the current ont
+
+  + `Node.list([:this, :visible])`
+
+
+
+Communicating between nodes
+
+
+
+
+
+iex(node1@localhost)4> Node.spawn(
+  :node2@localhost,
+  fn -> IO.puts("Hello from #{node()}") end
+)
+Hello from node2@localhost
+  + lambda run in node2
+
++ send messages to process
+
+
+  + location transparency
+
+    + send messages to process, regardless of their location
+
+iex(node1@localhost)5> caller = self()
+iex(node1@localhost)6> Node.spawn(
+  :node2@localhost,
+  fn -> send(caller, {:response, 1+2}) end
+)
+
+iex(node1@localhost)7> flush()
+{:response, 3}
+  + Whatever works in one BEAM instance will work across different instances
+
+    + except lambda
+
+  + you can use the same registered name on different nodes
+
+iex(node1@localhost)8> Process.register(self(), :shell)
+true
+iex(node2@localhost)3> Process.register(self(), :shell)
+true
+
+# send from node1
+iex(node1@localhost)9> send(
+  {:shell, :node2@localhost},
+  "Hello from node1!"
+)
+
+iex(node2@localhost)4> flush()
+"Hello from node1!"
++ Process discovery
+
+
+  + `Registry` isn’t cluster aware and works only in the scope of a local node
+
+  + `:global`
+
+iex(node1@localhost)10> :global.register_name({:todo_list, "bob"}, self())
+:yes
+
+iex(node2@localhost)6> :global.whereis_name({:todo_list, "bob"})
+#PID<7954.90.0>
+GenServer.start_link(
+  __MODULE__,
+  arg,
+  name: {:global, some_global_alias}
+)
+
+GenServer.call({:global, some_global_alias}, ...)
+  + groups of process
+
+    + register several processes under the same alias
+
+    + `pg` module
+
+      + https://www.erlang.org/doc/man/pg.html
+
+iex(node1@localhost)1> :pg.start_link()
+
+iex(node2@localhost)1> Node.connect(:node1@localhost)
+iex(node2@localhost)2> :pg.start_link()
+
+iex(node1@localhost)2> :pg.join({:todo_list, "bob"}, self())
+:ok
+iex(node2@localhost)3> :pg.join({:todo_list, "bob"}, self())
+:ok
+
+iex(node1@localhost)3> :pg.get_members({:todo_list, "bob"})
+[#PID<8531.90.0>, #PID<0.90.0>]
+iex(node2@localhost)4> :pg.get_members({:todo_list, "bob"})
+[#PID<0.90.0>, #PID<7954.90.0>]
+  + Links and monitors work even if processes reside on different nodes
+
++ `:rpc` module to call a function on remote node and get its result
+
++ Message passing is the core distribution primitive
+
+Network considerations'><meta property="og:type" content="article"><meta property="og:url" content="https://al002.github.io/pages/chapter-12/"><meta property="article:section" content="pages"><meta property="article:published_time" content="2024-12-25T00:00:00+00:00"><meta property="article:modified_time" content="2025-01-05T00:00:00+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Chapter 12"><meta name=twitter:description content='Distribution primitives
+
+Starting a cluster
+
+$ iex --sname node1@localhost
+iex(node1@localhost)1>
+
+Node.connect(:node2@localhost)
++ Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster
+
++ list all nodes in a cluster, including the current ont
+
+  + `Node.list([:this, :visible])`
+
+
+
+Communicating between nodes
+
+
+
+
+
+iex(node1@localhost)4> Node.spawn(
+  :node2@localhost,
+  fn -> IO.puts("Hello from #{node()}") end
+)
+Hello from node2@localhost
+  + lambda run in node2
+
++ send messages to process
+
+
+  + location transparency
+
+    + send messages to process, regardless of their location
+
+iex(node1@localhost)5> caller = self()
+iex(node1@localhost)6> Node.spawn(
+  :node2@localhost,
+  fn -> send(caller, {:response, 1+2}) end
+)
+
+iex(node1@localhost)7> flush()
+{:response, 3}
+  + Whatever works in one BEAM instance will work across different instances
+
+    + except lambda
+
+  + you can use the same registered name on different nodes
+
+iex(node1@localhost)8> Process.register(self(), :shell)
+true
+iex(node2@localhost)3> Process.register(self(), :shell)
+true
+
+# send from node1
+iex(node1@localhost)9> send(
+  {:shell, :node2@localhost},
+  "Hello from node1!"
+)
+
+iex(node2@localhost)4> flush()
+"Hello from node1!"
++ Process discovery
+
+
+  + `Registry` isn’t cluster aware and works only in the scope of a local node
+
+  + `:global`
+
+iex(node1@localhost)10> :global.register_name({:todo_list, "bob"}, self())
+:yes
+
+iex(node2@localhost)6> :global.whereis_name({:todo_list, "bob"})
+#PID<7954.90.0>
+GenServer.start_link(
+  __MODULE__,
+  arg,
+  name: {:global, some_global_alias}
+)
+
+GenServer.call({:global, some_global_alias}, ...)
+  + groups of process
+
+    + register several processes under the same alias
+
+    + `pg` module
+
+      + https://www.erlang.org/doc/man/pg.html
+
+iex(node1@localhost)1> :pg.start_link()
+
+iex(node2@localhost)1> Node.connect(:node1@localhost)
+iex(node2@localhost)2> :pg.start_link()
+
+iex(node1@localhost)2> :pg.join({:todo_list, "bob"}, self())
+:ok
+iex(node2@localhost)3> :pg.join({:todo_list, "bob"}, self())
+:ok
+
+iex(node1@localhost)3> :pg.get_members({:todo_list, "bob"})
+[#PID<8531.90.0>, #PID<0.90.0>]
+iex(node2@localhost)4> :pg.get_members({:todo_list, "bob"})
+[#PID<0.90.0>, #PID<7954.90.0>]
+  + Links and monitors work even if processes reside on different nodes
+
++ `:rpc` module to call a function on remote node and get its result
+
++ Message passing is the core distribution primitive
+
+Network considerations'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Pages","item":"https://al002.github.io/pages/"},{"@type":"ListItem","position":2,"name":"Chapter 12","item":"https://al002.github.io/pages/chapter-12/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Chapter 12","name":"Chapter 12","description":"Distribution primitives\nStarting a cluster $ iex --sname node1@localhost iex(node1@localhost)1\u0026gt; Node.connect(:node2@localhost) + Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster + list all nodes in a cluster, including the current ont + `Node.list([:this, :visible])` Communicating between nodes\niex(node1@localhost)4\u0026gt; Node.spawn( :node2@localhost, fn -\u0026gt; IO.puts(\u0026#34;Hello from #{node()}\u0026#34;) end ) Hello from node2@localhost + lambda run in node2 + send messages to process + location transparency + send messages to process, regardless of their location iex(node1@localhost)5\u0026gt; caller = self() iex(node1@localhost)6\u0026gt; Node.spawn( :node2@localhost, fn -\u0026gt; send(caller, {:response, 1+2}) end ) iex(node1@localhost)7\u0026gt; flush() {:response, 3} + Whatever works in one BEAM instance will work across different instances + except lambda + you can use the same registered name on different nodes iex(node1@localhost)8\u0026gt; Process.register(self(), :shell) true iex(node2@localhost)3\u0026gt; Process.register(self(), :shell) true # send from node1 iex(node1@localhost)9\u0026gt; send( {:shell, :node2@localhost}, \u0026#34;Hello from node1!\u0026#34; ) iex(node2@localhost)4\u0026gt; flush() \u0026#34;Hello from node1!\u0026#34; + Process discovery + `Registry` isn’t cluster aware and works only in the scope of a local node + `:global` iex(node1@localhost)10\u0026gt; :global.register_name({:todo_list, \u0026#34;bob\u0026#34;}, self()) :yes iex(node2@localhost)6\u0026gt; :global.whereis_name({:todo_list, \u0026#34;bob\u0026#34;}) #PID\u0026lt;7954.90.0\u0026gt; GenServer.start_link( __MODULE__, arg, name: {:global, some_global_alias} ) GenServer.call({:global, some_global_alias}, ...) + groups of process + register several processes under the same alias + `pg` module + https://www.erlang.org/doc/man/pg.html iex(node1@localhost)1\u0026gt; :pg.start_link() iex(node2@localhost)1\u0026gt; Node.connect(:node1@localhost) iex(node2@localhost)2\u0026gt; :pg.start_link() iex(node1@localhost)2\u0026gt; :pg.join({:todo_list, \u0026#34;bob\u0026#34;}, self()) :ok iex(node2@localhost)3\u0026gt; :pg.join({:todo_list, \u0026#34;bob\u0026#34;}, self()) :ok iex(node1@localhost)3\u0026gt; :pg.get_members({:todo_list, \u0026#34;bob\u0026#34;}) [#PID\u0026lt;8531.90.0\u0026gt;, #PID\u0026lt;0.90.0\u0026gt;] iex(node2@localhost)4\u0026gt; :pg.get_members({:todo_list, \u0026#34;bob\u0026#34;}) [#PID\u0026lt;0.90.0\u0026gt;, #PID\u0026lt;7954.90.0\u0026gt;] + Links and monitors work even if processes reside on different nodes + `:rpc` module to call a function on remote node and get its result + Message passing is the core distribution primitive Network considerations\n","keywords":[],"articleBody":"Distribution primitives\nStarting a cluster $ iex --sname node1@localhost iex(node1@localhost)1\u003e Node.connect(:node2@localhost) + Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster + list all nodes in a cluster, including the current ont + `Node.list([:this, :visible])` Communicating between nodes\niex(node1@localhost)4\u003e Node.spawn( :node2@localhost, fn -\u003e IO.puts(\"Hello from #{node()}\") end ) Hello from node2@localhost + lambda run in node2 + send messages to process + location transparency + send messages to process, regardless of their location iex(node1@localhost)5\u003e caller = self() iex(node1@localhost)6\u003e Node.spawn( :node2@localhost, fn -\u003e send(caller, {:response, 1+2}) end ) iex(node1@localhost)7\u003e flush() {:response, 3} + Whatever works in one BEAM instance will work across different instances + except lambda + you can use the same registered name on different nodes iex(node1@localhost)8\u003e Process.register(self(), :shell) true iex(node2@localhost)3\u003e Process.register(self(), :shell) true # send from node1 iex(node1@localhost)9\u003e send( {:shell, :node2@localhost}, \"Hello from node1!\" ) iex(node2@localhost)4\u003e flush() \"Hello from node1!\" + Process discovery + `Registry` isn’t cluster aware and works only in the scope of a local node + `:global` iex(node1@localhost)10\u003e :global.register_name({:todo_list, \"bob\"}, self()) :yes iex(node2@localhost)6\u003e :global.whereis_name({:todo_list, \"bob\"}) #PID\u003c7954.90.0\u003e GenServer.start_link( __MODULE__, arg, name: {:global, some_global_alias} ) GenServer.call({:global, some_global_alias}, ...) + groups of process + register several processes under the same alias + `pg` module + https://www.erlang.org/doc/man/pg.html iex(node1@localhost)1\u003e :pg.start_link() iex(node2@localhost)1\u003e Node.connect(:node1@localhost) iex(node2@localhost)2\u003e :pg.start_link() iex(node1@localhost)2\u003e :pg.join({:todo_list, \"bob\"}, self()) :ok iex(node2@localhost)3\u003e :pg.join({:todo_list, \"bob\"}, self()) :ok iex(node1@localhost)3\u003e :pg.get_members({:todo_list, \"bob\"}) [#PID\u003c8531.90.0\u003e, #PID\u003c0.90.0\u003e] iex(node2@localhost)4\u003e :pg.get_members({:todo_list, \"bob\"}) [#PID\u003c0.90.0\u003e, #PID\u003c7954.90.0\u003e] + Links and monitors work even if processes reside on different nodes + `:rpc` module to call a function on remote node and get its result + Message passing is the core distribution primitive Network considerations\nnode can connect only to a node that has the same type of name\nCookies\nTo connect two nodes, they must agree on a magical cookie iex(node1@localhost)1\u003e Node.get_cookie() :JHSKSHDYEJHDKEDKDIEN iex(node1@localhost)1\u003e Node.set_cookie(:some_cookie) iex(node1@localhost)2\u003e Node.get_cookie() :some_cookie $ iex --sname node1@localhost --cookie another_cookie iex(node1@localhost)1\u003e Node.get_cookie() :another_cookie ","wordCount":"327","inLanguage":"en","datePublished":"2024-12-25T00:00:00Z","dateModified":"2025-01-05T00:00:00Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://al002.github.io/pages/chapter-12/"},"publisher":{"@type":"Organization","name":"Elixir in action notes","logo":{"@type":"ImageObject","url":"https://al002.github.io/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://al002.github.io/ accesskey=h title="Elixir in action notes (Alt + H)">Elixir in action notes</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">Chapter 12</h1><div class=post-meta><span title='2024-12-25 00:00:00 +0000 UTC'>December 25, 2024</span></div></header><div class=post-content><p>Distribution primitives</p><ul><li>Starting a cluster</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ iex --sname node1@localhost
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>1&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Node.connect<span style=color:#f92672>(</span>:node2@localhost<span style=color:#f92672>)</span>
+</span></span></code></pre></div><pre><code>+ Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster
+
++ list all nodes in a cluster, including the current ont
+
+  + `Node.list([:this, :visible])`
+</code></pre><ul><li><p>Communicating between nodes</p><ul><li></li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>4&gt; Node.spawn<span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>  :node2@localhost,
+</span></span><span style=display:flex><span>  fn -&gt; IO.puts<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Hello from #{node()}&#34;</span><span style=color:#f92672>)</span> end
+</span></span><span style=display:flex><span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Hello from node2@localhost
+</span></span></code></pre></div><pre><code>  + lambda run in node2
+
++ send messages to process
+
+
+  + location transparency
+
+    + send messages to process, regardless of their location
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>5&gt; caller <span style=color:#f92672>=</span> self<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>6&gt; Node.spawn<span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>  :node2@localhost,
+</span></span><span style=display:flex><span>  fn -&gt; send<span style=color:#f92672>(</span>caller, <span style=color:#f92672>{</span>:response, 1+2<span style=color:#f92672>})</span> end
+</span></span><span style=display:flex><span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>7&gt; flush<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>:response, 3<span style=color:#f92672>}</span>
+</span></span></code></pre></div><pre><code>  + Whatever works in one BEAM instance will work across different instances
+
+    + except lambda
+
+  + you can use the same registered name on different nodes
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>8&gt; Process.register<span style=color:#f92672>(</span>self<span style=color:#f92672>()</span>, :shell<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>true
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node2@localhost<span style=color:#f92672>)</span>3&gt; Process.register<span style=color:#f92672>(</span>self<span style=color:#f92672>()</span>, :shell<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>true
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># send from node1</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>9&gt; send<span style=color:#f92672>(</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>{</span>:shell, :node2@localhost<span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;Hello from node1!&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node2@localhost<span style=color:#f92672>)</span>4&gt; flush<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;Hello from node1!&#34;</span>
+</span></span></code></pre></div><pre><code>+ Process discovery
+
+
+  + `Registry` isn’t cluster aware and works only in the scope of a local node
+
+  + `:global`
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>10&gt; :global.register_name<span style=color:#f92672>({</span>:todo_list, <span style=color:#e6db74>&#34;bob&#34;</span><span style=color:#f92672>}</span>, self<span style=color:#f92672>())</span>
+</span></span><span style=display:flex><span>:yes
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node2@localhost<span style=color:#f92672>)</span>6&gt; :global.whereis_name<span style=color:#f92672>({</span>:todo_list, <span style=color:#e6db74>&#34;bob&#34;</span><span style=color:#f92672>})</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#PID&lt;7954.90.0&gt;</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-elixir data-lang=elixir><span style=display:flex><span><span style=color:#a6e22e>GenServer</span><span style=color:#f92672>.</span>start_link(
+</span></span><span style=display:flex><span>  __MODULE__,
+</span></span><span style=display:flex><span>  arg,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>name</span>: {<span style=color:#e6db74>:global</span>, some_global_alias}
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>GenServer</span><span style=color:#f92672>.</span>call({<span style=color:#e6db74>:global</span>, some_global_alias}, ...)
+</span></span></code></pre></div><pre><code>  + groups of process
+
+    + register several processes under the same alias
+
+    + `pg` module
+
+      + https://www.erlang.org/doc/man/pg.html
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>1&gt; :pg.start_link<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node2@localhost<span style=color:#f92672>)</span>1&gt; Node.connect<span style=color:#f92672>(</span>:node1@localhost<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node2@localhost<span style=color:#f92672>)</span>2&gt; :pg.start_link<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>2&gt; :pg.join<span style=color:#f92672>({</span>:todo_list, <span style=color:#e6db74>&#34;bob&#34;</span><span style=color:#f92672>}</span>, self<span style=color:#f92672>())</span>
+</span></span><span style=display:flex><span>:ok
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node2@localhost<span style=color:#f92672>)</span>3&gt; :pg.join<span style=color:#f92672>({</span>:todo_list, <span style=color:#e6db74>&#34;bob&#34;</span><span style=color:#f92672>}</span>, self<span style=color:#f92672>())</span>
+</span></span><span style=display:flex><span>:ok
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>3&gt; :pg.get_members<span style=color:#f92672>({</span>:todo_list, <span style=color:#e6db74>&#34;bob&#34;</span><span style=color:#f92672>})</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span><span style=color:#75715e>#PID&lt;8531.90.0&gt;, #PID&lt;0.90.0&gt;]</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node2@localhost<span style=color:#f92672>)</span>4&gt; :pg.get_members<span style=color:#f92672>({</span>:todo_list, <span style=color:#e6db74>&#34;bob&#34;</span><span style=color:#f92672>})</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span><span style=color:#75715e>#PID&lt;0.90.0&gt;, #PID&lt;7954.90.0&gt;]</span>
+</span></span></code></pre></div><pre><code>  + Links and monitors work even if processes reside on different nodes
+
++ `:rpc` module to call a function on remote node and get its result
+
++ Message passing is the core distribution primitive
+</code></pre><p>Network considerations</p><ul><li><p>node can connect only to a node that has the same type of name</p></li><li><p>Cookies</p><ul><li>To connect two nodes, they must agree on a magical <em>cookie</em></li></ul></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>1&gt; Node.get_cookie<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>:JHSKSHDYEJHDKEDKDIEN
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>1&gt; Node.set_cookie<span style=color:#f92672>(</span>:some_cookie<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>2&gt; Node.get_cookie<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>:some_cookie
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ iex --sname node1@localhost --cookie another_cookie
+</span></span><span style=display:flex><span>iex<span style=color:#f92672>(</span>node1@localhost<span style=color:#f92672>)</span>1&gt; Node.get_cookie<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>:another_cookie
+</span></span></code></pre></div></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://al002.github.io/>Elixir in action notes</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
