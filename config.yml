@@ -4,6 +4,7 @@ title: Elixir in action notes
 theme: "PaperMod"
 
 params:
+  social: true
   disableSpecial1stPost: true
   sitemap:
     changefreq: daily
