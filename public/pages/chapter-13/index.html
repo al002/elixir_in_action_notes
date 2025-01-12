@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Chapter 13 | Elixir in action notes</title>
+<meta name="keywords" content="">
+<meta name="description" content="OTP releases
+
+An OTP release is a standalone, compiled, runnable system that consists of the minimum set of OTP applications needed by the system
+
+$ mix release
+* assembling todo-0.1.0 on MIX_ENV=dev
+* using config/runtime.exs to configure the release at runtime
+Release created at _build/dev/rel/todo
+
+Using a release
+
+# start in the foreground with `iex` shell
+$ RELEASE_NODE=&#34;todo@localhost&#34; _build/prod/rel/todo/bin/todo start_iex
+# start in the background
+RELEASE_NODE=&#34;todo@localhost&#34; _build/prod/rel/todo/bin/todo daemon
+Analyzing system behavior">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/pages/chapter-13/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/pages/chapter-13/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Elixir in action notes (Alt + H)">Elixir in action notes</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Chapter 13
+    </h1>
+    <div class="post-meta"><span title='2024-12-24 00:00:00 +0000 UTC'>December 24, 2024</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>OTP releases</p>
+<ul>
+<li>An OTP release is a standalone, compiled, runnable system that consists of the minimum set of OTP applications needed by the system</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mix release
+</span></span><span style="display:flex;"><span>* assembling todo-0.1.0 on MIX_ENV<span style="color:#f92672">=</span>dev
+</span></span><span style="display:flex;"><span>* using config/runtime.exs to configure the release at runtime
+</span></span><span style="display:flex;"><span>Release created at _build/dev/rel/todo
+</span></span></code></pre></div><ul>
+<li>Using a release</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># start in the foreground with `iex` shell</span>
+</span></span><span style="display:flex;"><span>$ RELEASE_NODE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;todo@localhost&#34;</span> _build/prod/rel/todo/bin/todo start_iex
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># start in the background</span>
+</span></span><span style="display:flex;"><span>RELEASE_NODE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;todo@localhost&#34;</span> _build/prod/rel/todo/bin/todo daemon
+</span></span></code></pre></div><p>Analyzing system behavior</p>
+<ul>
+<li>
+<p>The key to understanding a highly concurrent system lies in logging and tracing</p>
+</li>
+<li>
+<p><code>IO.inspect</code></p>
+<ul>
+<li>surround any part of the code with IO.inspect (or pipe into it via |&gt;) without affecting the behavior of the program</li>
+</ul>
+</li>
+<li>
+<p><code>dgb</code></p>
+<ul>
+<li><a href="https://hexdocs.pm/elixir/Kernel.html#dbg/2">https://hexdocs.pm/elixir/Kernel.html#dbg/2</a></li>
+</ul>
+</li>
+<li>
+<p><code>pry</code></p>
+<ul>
+<li>
+<p><a href="https://hexdocs.pm/iex/IEx.html#pry/0">https://hexdocs.pm/iex/IEx.html#pry/0</a></p>
+</li>
+<li>
+<p><a href="https://hexdocs.pm/elixir/debugging.html">https://hexdocs.pm/elixir/debugging.html</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>benchmarking and profiling tools</p>
+<ul>
+<li>
+<p><code>:timer.tc/1</code></p>
+<ul>
+<li><a href="https://erlang.org/doc/man/timer.html#tc-1">https://erlang.org/doc/man/timer.html#tc-1</a></li>
+</ul>
+</li>
+<li>
+<p>mix profile.cprof <a href="https://hexdocs.pm/mix/Mix.Tasks.Profile.Cprof.html">https://hexdocs.pm/mix/Mix.Tasks.Profile.Cprof.html</a></p>
+</li>
+<li>
+<p>mix profile.eprof <a href="https://hexdocs.pm/mix/Mix.Tasks.Profile.Eprof.html">https://hexdocs.pm/mix/Mix.Tasks.Profile.Eprof.html</a></p>
+</li>
+<li>
+<p>mix profile.fprof <a href="https://hexdocs.pm/mix/Mix.Tasks.Profile.Fprof.html">https://hexdocs.pm/mix/Mix.Tasks.Profile.Fprof.html</a></p>
+</li>
+<li>
+<p><code>Benchee</code></p>
+<ul>
+<li><a href="https://hexdocs.pm/benchee">https://hexdocs.pm/benchee</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://www.erlang.org/doc/efficiency_guide/profiling.html">https://www.erlang.org/doc/efficiency_guide/profiling.html</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Logging</p>
+<ul>
+<li>
+<p><a href="https://hexdocs.pm/logger/Logger.html">https://hexdocs.pm/logger/Logger.html</a></p>
+</li>
+<li>
+<p><a href="https://www.erlang.org/doc/apps/kernel/logger_chapter.html">https://www.erlang.org/doc/apps/kernel/logger_chapter.html</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Tracing</p>
+<ul>
+<li>
+<p><code>iex(todo@localhost)1&gt; :sys.trace(Todo.Cache.server_process(&quot;bob&quot;), true)</code></p>
+</li>
+<li>
+<p>excessive tracing may hurt the system’s performance</p>
+</li>
+<li>
+<p><code>:dbg</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>tracer@localhost<span style="color:#f92672">)</span>1&gt; :dbg.tracer<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>tracer@localhost<span style="color:#f92672">)</span>2&gt; :dbg.n<span style="color:#f92672">(</span>:<span style="color:#e6db74">&#34;todo@localhost&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>tracer@localhost<span style="color:#f92672">)</span>3&gt; :dbg.p<span style="color:#f92672">(</span>:all, <span style="color:#f92672">[</span>:call<span style="color:#f92672">])</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>tracer@localhost<span style="color:#f92672">)</span>4&gt; :dbg.tp<span style="color:#f92672">(</span>Todo.Server, <span style="color:#f92672">[])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>&lt;12505.1106.0&gt;<span style="color:#f92672">)</span> call <span style="color:#e6db74">&#39;Elixir.Todo.Server&#39;</span>:whereis<span style="color:#f92672">(</span>&lt;&lt;<span style="color:#e6db74">&#34;bob&#34;</span>&gt;&gt;<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>&lt;12505.1106.0&gt;<span style="color:#f92672">)</span> call <span style="color:#e6db74">&#39;Elixir.Todo.Server&#39;</span>:child_spec<span style="color:#f92672">(</span>&lt;&lt;<span style="color:#e6db74">&#34;bob&#34;</span>&gt;&gt;<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>&lt;12505.1012.0&gt;<span style="color:#f92672">)</span> call <span style="color:#e6db74">&#39;Elixir.Todo.Server&#39;</span>:start_link<span style="color:#f92672">(</span>&lt;&lt;<span style="color:#e6db74">&#34;bob&#34;</span>&gt;&gt;<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>&lt;12505.1107.0&gt;<span style="color:#f92672">)</span> call <span style="color:#e6db74">&#39;Elixir.Todo.Server&#39;</span>:init<span style="color:#f92672">(</span>&lt;&lt;<span style="color:#e6db74">&#34;bob&#34;</span>&gt;&gt;<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>&lt;12505.1107.0&gt;<span style="color:#f92672">)</span> call <span style="color:#e6db74">&#39;Elixir.Todo.Server&#39;</span>:handle_continue<span style="color:#f92672">(</span>init, ...<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>&lt;12505.1106.0&gt;<span style="color:#f92672">)</span> call <span style="color:#e6db74">&#39;Elixir.Todo.Server&#39;</span>:entries<span style="color:#f92672">(</span>&lt;12505.1107.0&gt;, ...<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>&lt;12505.1107.0&gt;<span style="color:#f92672">)</span> call <span style="color:#e6db74">&#39;Elixir.Todo.Server&#39;</span>:handle_call<span style="color:#f92672">({</span>entries, ...<span style="color:#f92672">})</span>
+</span></span></code></pre></div><pre><code>+ Recon
+
+  + https://github.com/ferd/recon
+</code></pre>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Elixir in action notes</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

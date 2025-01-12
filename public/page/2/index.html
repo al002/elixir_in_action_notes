@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.140.2"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Elixir in action notes</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml">
+<link rel="alternate" type="application/json" href="http://localhost:1313/index.json">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+    
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Elixir in action notes (Alt + H)">Elixir in action notes</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 11
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>OTP applications
+An OTP application is a component that consists of multiple modules and that can depend on other applications
+When the application is started, the function HelloWorld.Application.start/2 is called
+defmodule HelloWorld.Application do use Application def start(_type, _args) do children = [] opts = [strategy: :one_for_one, name: HelloWorld.Supervisor] Supervisor.start_link(children, opts) end end Starting the application
+start the application in the running BEAM instance
+call Application.start/1
+verifies whether all the applications you’re depending on are started
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-26 00:00:00 +0000 UTC'>December 26, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 11" href="http://localhost:1313/pages/chapter-11/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 12
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Distribution primitives
+Starting a cluster $ iex --sname node1@localhost iex(node1@localhost)1&gt; Node.connect(:node2@localhost) &#43; Adding a new node to such a cluster amounts to establishing a connection to a single node from the cluster. The new node will then automatically connect to all nodes in the cluster &#43; list all nodes in a cluster, including the current ont &#43; `Node.list([:this, :visible])` Communicating between nodes
+iex(node1@localhost)4&gt; Node.spawn( :node2@localhost, fn -&gt; IO.puts(&#34;Hello from #{node()}&#34;) end ) Hello from node2@localhost &#43; lambda run in node2 &#43; send messages to process &#43; location transparency &#43; send messages to process, regardless of their location iex(node1@localhost)5&gt; caller = self() iex(node1@localhost)6&gt; Node.spawn( :node2@localhost, fn -&gt; send(caller, {:response, 1&#43;2}) end ) iex(node1@localhost)7&gt; flush() {:response, 3} &#43; Whatever works in one BEAM instance will work across different instances &#43; except lambda &#43; you can use the same registered name on different nodes iex(node1@localhost)8&gt; Process.register(self(), :shell) true iex(node2@localhost)3&gt; Process.register(self(), :shell) true # send from node1 iex(node1@localhost)9&gt; send( {:shell, :node2@localhost}, &#34;Hello from node1!&#34; ) iex(node2@localhost)4&gt; flush() &#34;Hello from node1!&#34; &#43; Process discovery &#43; `Registry` isn’t cluster aware and works only in the scope of a local node &#43; `:global` iex(node1@localhost)10&gt; :global.register_name({:todo_list, &#34;bob&#34;}, self()) :yes iex(node2@localhost)6&gt; :global.whereis_name({:todo_list, &#34;bob&#34;}) #PID&lt;7954.90.0&gt; GenServer.start_link( __MODULE__, arg, name: {:global, some_global_alias} ) GenServer.call({:global, some_global_alias}, ...) &#43; groups of process &#43; register several processes under the same alias &#43; `pg` module &#43; https://www.erlang.org/doc/man/pg.html iex(node1@localhost)1&gt; :pg.start_link() iex(node2@localhost)1&gt; Node.connect(:node1@localhost) iex(node2@localhost)2&gt; :pg.start_link() iex(node1@localhost)2&gt; :pg.join({:todo_list, &#34;bob&#34;}, self()) :ok iex(node2@localhost)3&gt; :pg.join({:todo_list, &#34;bob&#34;}, self()) :ok iex(node1@localhost)3&gt; :pg.get_members({:todo_list, &#34;bob&#34;}) [#PID&lt;8531.90.0&gt;, #PID&lt;0.90.0&gt;] iex(node2@localhost)4&gt; :pg.get_members({:todo_list, &#34;bob&#34;}) [#PID&lt;0.90.0&gt;, #PID&lt;7954.90.0&gt;] &#43; Links and monitors work even if processes reside on different nodes &#43; `:rpc` module to call a function on remote node and get its result &#43; Message passing is the core distribution primitive Network considerations
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-25 00:00:00 +0000 UTC'>December 25, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 12" href="http://localhost:1313/pages/chapter-12/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 13
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>OTP releases
+An OTP release is a standalone, compiled, runnable system that consists of the minimum set of OTP applications needed by the system $ mix release * assembling todo-0.1.0 on MIX_ENV=dev * using config/runtime.exs to configure the release at runtime Release created at _build/dev/rel/todo Using a release # start in the foreground with `iex` shell $ RELEASE_NODE=&#34;todo@localhost&#34; _build/prod/rel/todo/bin/todo start_iex # start in the background RELEASE_NODE=&#34;todo@localhost&#34; _build/prod/rel/todo/bin/todo daemon Analyzing system behavior
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-24 00:00:00 +0000 UTC'>December 24, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 13" href="http://localhost:1313/pages/chapter-13/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/">
+      «&nbsp;Prev&nbsp;
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Elixir in action notes</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

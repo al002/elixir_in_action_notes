@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Pages | Elixir in action notes</title>
+<meta name="keywords" content="">
+<meta name="description" content="Pages - Elixir in action notes">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/pages/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/pages/index.xml">
+<link rel="alternate" type="application/json" href="http://localhost:1313/pages/index.json">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/pages/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+    
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Elixir in action notes (Alt + H)">Elixir in action notes</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Pages
+  </h1>
+</header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Erlang
+High availability / Concurrency Fault tolerance
+Erlang process is completely isolated from each other.
+no memory share
+a crash of one process doesn’t cause a crash of other processes
+communicate via asynchronous messages
+Scalability
+BEAM can take advantage of all available CPU cores Distribution
+processes works the same way in same BEAM instance or remote computer
+Erlang-based system is automatically ready to be distributed over multiple machines
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-05 00:00:00 +0000 UTC'>January 5, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 1" href="http://localhost:1313/pages/chapter-1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Organizing code
+Modules
+A module is a collection of functions, somewhat like a namespace defmodule Geometry do def rectangle_area(a, b) do a*b end end Functions def rectangle_area(a, b) do ... end def rectangle_area(a, b), do: a * b &#43; Arity &#43; the number of arguments a function receives &#43; A function is uniquely identified by its containing module, name, and arity &#43; Rectangle.area/2, where /2 denotes the function’s arity. &#43; same name but different arities are two different functions &#43; commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments &#43; `\\` operator followed by the argument’s default value defmodule Calculator do def add(a, b \\ 0), do: a &#43; b end &#43; generates two functions defmodule Calculator do def add(a), do: add(a, 0) def add(a, b), do: a&#43;b end &#43; cannot accept a variable number of arguments &#43; Visibility &#43; `def` macro is `exported` &#43; `defp` macro is private &#43; can be used only inside the module it’s defined in Imports and alias # Import defmodule MyModule do import IO def my_function do puts &#34;Calling imported function.&#34; end end &#43; Importing a module allows to call its public functions without prefixing them with the module name # Alias defmodule MyModule do alias IO, as: MyIO def my_function do MyIO.puts(&#34;Calling imported function.&#34;) end end defmodule MyModule do alias Geometry.Rectangle, as: Rectangle def my_function do Rectangle.area(...) end end Module attributes
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-04 00:00:00 +0000 UTC'>January 4, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 2" href="http://localhost:1313/pages/chapter-2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 3
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Pattern matching
+= operator is called the match operator
+assignment-like expression is an example of pattern matching iex(1)&gt; person = {&#34;Bob&#34;, 25} &#43; Matching tuples iex(1)&gt; {name, age} = {&#34;Bob&#34;, 25} &#43; Matching constants iex(2)&gt; person = {:person, &#34;Bob&#34;, 25} iex(3)&gt; {:person, name, age} = person {:person, &#34;Bob&#34;, 25} {:ok, contents} = File.read(&#34;my_app.config&#34;) &#43; By using constants in patterns, you tighten the match, ensuring some part of the right side has a specific value. &#43; `^` pin operator iex(7)&gt; expected_name = &#34;Bob&#34; &#34;Bob&#34; iex(8)&gt; {^expected_name, _} = {&#34;Bob&#34;, 25} {&#34;Bob&#34;, 25} iex(9)&gt; {^expected_name, _} = {&#34;Alice&#34;, 30} ** (MatchError) no match of right hand side value: {&#34;Alice&#34;, 30} &#43; Using `^expected_name` in patterns indicates you expect the value of the variable `expected_name` to be in the appropriate position in the right-side term &#43; like `({&#34;Bob&#34;, _} = …)` &#43; Matching lists iex(1)&gt; [first, second, third] = [1, 2, 3] [1, 2, 3] iex(3)&gt; [head | tail] = [1, 2, 3] [1, 2, 3] iex(4)&gt; head 1 iex(5)&gt; tail [2, 3] &#43; Matching maps iex(1)&gt; %{name: name, age: age} = %{name: &#34;Bob&#34;, age: 25} %{age: 25, name: &#34;Bob&#34;} iex(6)&gt; %{age: age, works_at: works_at} = %{name: &#34;Bob&#34;, age: 25} ** (MatchError) no match of right hand side value &#43; Matching bitstrings and binaries iex(6)&gt; &lt;&lt;b1, rest :: binary&gt;&gt; = binary &lt;&lt;1, 2, 3&gt;&gt; iex(7)&gt; b1 1 iex(8)&gt; rest &lt;&lt;2, 3&gt;&gt; &#43; Matching binary strings iex(16)&gt; command = &#34;ping www.example.com&#34; &#34;ping www.example.com&#34; iex(17)&gt; &#34;ping &#34; &lt;&gt; url = command &#34;ping www.example.com&#34; iex(18)&gt; url &#34;www.example.com&#34; &#43; Compound matches &#43; match expression &#43; `pattern = expression` &#43; `iex(2)&gt; a = 1 &#43; 3` &#43; 1 The expression on the right side is evaluated. &#43; 2 The resulting value is matched against the left-side pattern. &#43; 3 Variables from the pattern are bound. &#43; 4 The result of the match expression is the result of the right-side term &#43; match chaining iex(3)&gt; a = (b = 1 &#43; 3) 4 iex(4)&gt; a =b=1&#43;3 4 &#43; 1 The expression 1 &#43; 3 is evaluated. &#43; 2 The result (4) is matched against the pattern b. &#43; 3 The result of the inner match (which is, again, 4) is matched against the pattern a. iex(6)&gt; date_time = {_, {hour, _, _}} = :calendar.local_time() iex(7)&gt; {_, {hour, _, _}} = date_time = :calendar.local_time() iex(8)&gt; date_time {{2023, 11, 11}, {21, 32, 34}} iex(9)&gt; hour 21 &#43; ordering is not matter &#43; because the result of a pattern match is always the result of the term being matched (whatever is on the right side of the match operator) &#43; General behavior &#43; two parts: &#43; *pattern* (left side) &#43; *term* (right side) &#43; You assert your expectations about the right-side term. If these expectations aren’t met, an error is raised. &#43; You bind some parts of the term to variables from the pattern. Matching with functions def my_fun(arg1, arg2) do ... end &#43; `arg1` and `arg2` are patterns &#43; the arguments you provide are matched against the patterns specified in the function definition &#43; Multiclause functions &#43; A clause is a function definition specified by the def expression defmodule Geometry do def area({:rectangle, a, b}) do a*b end def area({:square, a}) do a*a end def area({:circle, r}) do r * r * 3.14 end end &#43; clause order is matter, the runtime tries to select the clauses, using the order in the source code &#43; Guards &#43; The guard is a logical expression that adds further conditions to the pattern defmodule TestNum do def test(x) when x &lt; 0 do :negative end def test(x) when x == 0 do :zero end def test(x) when x &gt; 0 do :positive end end &#43; operators and functions allowed in guards &#43; Comparison operators (=\=, !=, =\ , ! , &gt;, &lt;, &lt;=, and &gt;=) &#43; Boolean operators (and and or) and negation operators (not and !) &#43; Arithmetic operators (&#43;, -, *, and /) &#43; Type-check functions from the Kernel module (e.g., is_number/1, is_atom/1, and so on) &#43; https://hexdocs.pm/elixir/patterns-and-guards.html#guards &#43; when error raised inside guard, it won&#39;t propagate, guard expression will return `false`. The corresponding clause won’t match, but some other clause might &#43; Multiclause lambdas &#43; general lambda syntax fn pattern_1, pattern_2 -&gt; ... pattern_3, pattern_4 -&gt; ... ... end iex(3)&gt; test_num = fn x when is_number(x) and x &lt; 0 -&gt; :negative x when x == 0 -&gt; :zero x when is_number(x) and x &gt; 0 -&gt; :positive end Conditionals
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-03 00:00:00 +0000 UTC'>January 3, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 3" href="http://localhost:1313/pages/chapter-3/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 4
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Basic principles of abstraction in Elixir
+A module is in charge of abstracting some behavior.
+The module’s functions usually expect an instance of the abstraction as the first argument.
+Modifier functions return a modified version of the abstraction.
+Query functions return some other type of data.
+Abstracting with modules
+defmodule TodoList do ... def add_entry(todo_list, entry) do entry = Map.put(entry, :id, todo_list.next_id) new_entries = Map.put( todo_list.entries, todo_list.next_id, entry ) %TodoList{todo_list | entries: new_entries, next_id: todo_list.next_id &#43; 1 } end ... end &#43; The entire operation will be atomic &#43; This is the consequence of immutability. The effect of adding an entry is visible to others only when the `add_entry/2` function finishes and its result is taken into a variable. If something goes wrong and you raise an error, the effect of any transformations won’t be visible Polymorphism with protocols
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-02 00:00:00 +0000 UTC'>January 2, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 4" href="http://localhost:1313/pages/chapter-4/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 5
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Concurrency primitives
+Creating processes iex(1)&gt; run_query = fn query_def -&gt; Process.sleep(2000) &#34;#{query_def} result&#34; end spawn(fn -&gt; expression_1 ... expression_n end) iex(4)&gt; spawn(fn -&gt; query_result = run_query.(&#34;query 1&#34;) IO.puts(query_result) end) #PID&lt;0.48.0&gt; query 1 result # Printed after 2 seconds iex(5)&gt; async_query = fn query_def -&gt; spawn(fn -&gt; query_result = run_query.(query_def) IO.puts(query_result) end) end iex(6)&gt; async_query.(&#34;query 1&#34;) #PID&lt;0.52.0&gt; query 1 result # 2 senconds later iex(7)&gt; Enum.each(1..5, &amp;async_query.(&#34;query #{&amp;1}&#34;)) :ok query 1 result query 2 result query 3 result query 4 result query 5 result # 2 seconds later Message passing
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-01 00:00:00 +0000 UTC'>January 1, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 5" href="http://localhost:1313/pages/chapter-5/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 6
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Generic server processes
+start
+init
+handle_call is synchronous request
+handle_cast is asynchronous request
+handle_info handle plain messages, not specific to GenServer
+callback function execute in server process
+Plugging into GenServer
+defmodule KeyValueStore do use GenServer end &#43; `use` macro &#43; During compilation, when this instruction is encountered, the specific macro from the `GenServer` module is invoked. That macro then injects several functions into the calling module &#43; use `@impl GenServer` to tells the compiler that the function about to be defined is a callback function for the GenServer behaviour defmodule EchoServer do use GenServer @impl GenServer def handle_call(some_request, server_state) do {:reply, some_request, server_state} end end &#43; name registration GenServer.start( CallbackModule, init_param, name: :some_name ) # During compilation, __MODULE__ is replaced with the name of the module where the code resides: defmodule KeyValueStore do def start() do GenServer.start(__MODULE__, nil, name: __MODULE__) end def put(key, value) do GenServer.cast(__MODULE__, {:put, key, value}) end ... end &#43; `{:stop, reason}` or `:ignore` to stop server process &#43; `handle_call` return `{:stop, reason, response, new_state}` Process lifecycle ...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-31 00:00:00 +0000 UTC'>December 31, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 6" href="http://localhost:1313/pages/chapter-6/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 7
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Mix project conventions
+place module under a common top-level alias
+like Todo.List, Todo.Server one file, one module
+except small helper module or protocol implementation for the module filename should be an underscore-case
+TodoServer module would reside in todo_server.ex file in the lib folder The folder structure should correspond to multipart module names
+Todo.Server should reside in the lib/todo/server.ex file Addressing the process bottleneck
+use process considerations
+The code must manage a long-living state
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-30 00:00:00 +0000 UTC'>December 30, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 7" href="http://localhost:1313/pages/chapter-7/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 8
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Runtime errors
+error types
+errors, exits, and throws
+error
+raise(&#34;Something went wrong&#34;) ** (RuntimeError) Something went wrong &#43; exit iex(2)&gt; spawn(fn -&gt; exit(&#34;I&#39;m done&#34;) IO.puts(&#34;This doesn&#39;t happen&#34;) end) &#43; throws iex(3)&gt; throw(:thrown_value) ** (throw) :thrown_value Handling errors try do ... catch error_type, error_value -&gt; ... end &#43; `catch` blocks are patterns &#43; tail call isn’t possible if the function call resides in a `try` expression A run-time error has a type, which can be :error, :exit, or :throw
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-29 00:00:00 +0000 UTC'>December 29, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 8" href="http://localhost:1313/pages/chapter-8/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 9
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Use Registry to register process and then discover it
+iex(1)&gt; Registry.start_link(name: :my_registry, keys: :unique) iex(2)&gt; spawn(fn -&gt; Registry.register(:my_registry, {:database_worker, 1}, nil) receive do msg -&gt; IO.puts(&#34;got message #{inspect(msg)}&#34;) end end) iex(3)&gt; [{db_worker_pid, _value}] = Registry.lookup( :my_registry, {:database_worker, 1} ) iex(4)&gt; send(db_worker_pid, :some_message) got message :some_message Via tuples
+allows you to use an arbitrary third-party registry to register OTP-compliant processes, such as GenServer and supervisors
+GenServer.start_link(callback_module, some_arg, name: some_name)
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-28 00:00:00 +0000 UTC'>December 28, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 9" href="http://localhost:1313/pages/chapter-9/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Chapter 10
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Tasks
+The Task module can be used to concurrently run a job
+Awaited tasks
+An awaited task is a process that executes some function, sends the function result back to the starter process, and then terminates iex(1)&gt; long_job = fn -&gt; Process.sleep(2000) :some_result end iex(2)&gt; task = Task.async(long_job) # await will wait response from the task process # default 5 seconds to timeout iex(3)&gt; Task.await(task) :some_result &#43; if any task process crashes, the starter process will crash too &#43; `Task.async/1` has all-or-nothing semantics Non-awaited tasks iex(1)&gt; Task.start_link(fn -&gt; Process.sleep(1000) IO.puts(&#34;Hello from task&#34;) end) {:ok, #PID&lt;0.89.0&gt;} # Result of Task.start_link/1 Hello from task! # Printed 1 second later Supervising dynamic tasks iex(1)&gt; Task.Supervisor.start_link(name: MyTaskSupervisor) iex(2)&gt; Task.Supervisor.start_child( MyTaskSupervisor, fn -&gt; IO.puts(&#34;Task started&#34;) Process.sleep(2000) IO.puts(&#34;Task stopping&#34;) end ) {:ok, #PID&lt;0.118.0&gt;} Task started Task stopping Agents
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-27 00:00:00 +0000 UTC'>December 27, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Chapter 10" href="http://localhost:1313/pages/chapter-10/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="http://localhost:1313/pages/page/2/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Elixir in action notes</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Chapter 3 | Elixir in action notes</title>
+<meta name="keywords" content="">
+<meta name="description" content="Pattern matching
+
+
+= operator is called the match operator
+
+assignment-like expression is an example of pattern matching
+
+
+
+iex(1)&gt; person = {&#34;Bob&#34;, 25}
+&#43; Matching tuples
+
+iex(1)&gt; {name, age} = {&#34;Bob&#34;, 25}
+&#43; Matching constants
+
+iex(2)&gt; person = {:person, &#34;Bob&#34;, 25}
+
+iex(3)&gt; {:person, name, age} = person
+{:person, &#34;Bob&#34;, 25}
+
+{:ok, contents} = File.read(&#34;my_app.config&#34;)
+  &#43; By using constants in patterns, you tighten the match, ensuring some part of the right side has a specific value.
+
+  &#43; `^` pin operator
+
+iex(7)&gt; expected_name = &#34;Bob&#34;
+&#34;Bob&#34;
+iex(8)&gt; {^expected_name, _} = {&#34;Bob&#34;, 25}
+{&#34;Bob&#34;, 25}
+iex(9)&gt; {^expected_name, _} = {&#34;Alice&#34;, 30}
+** (MatchError) no match of right hand side value: {&#34;Alice&#34;, 30}
+    &#43; Using `^expected_name` in patterns indicates you expect the value of the variable `expected_name` to be in the appropriate position in the right-side term
+
+      &#43; like `({&quot;Bob&quot;, _} = …)`
+
+&#43; Matching lists
+
+iex(1)&gt; [first, second, third] = [1, 2, 3]
+[1, 2, 3]
+
+
+iex(3)&gt; [head | tail] = [1, 2, 3]
+[1, 2, 3]
+
+iex(4)&gt; head
+1
+
+iex(5)&gt; tail
+[2, 3]
+&#43; Matching maps
+
+iex(1)&gt; %{name: name, age: age} = %{name: &#34;Bob&#34;, age: 25}
+%{age: 25, name: &#34;Bob&#34;}
+
+iex(6)&gt; %{age: age, works_at: works_at} = %{name: &#34;Bob&#34;, age: 25}
+** (MatchError) no match of right hand side value
+&#43; Matching bitstrings and binaries
+
+iex(6)&gt; &lt;&lt;b1, rest :: binary&gt;&gt; = binary
+&lt;&lt;1, 2, 3&gt;&gt;
+
+iex(7)&gt; b1
+1
+
+iex(8)&gt; rest
+&lt;&lt;2, 3&gt;&gt;
+&#43; Matching binary strings
+
+iex(16)&gt; command = &#34;ping www.example.com&#34;
+&#34;ping www.example.com&#34;
+
+iex(17)&gt; &#34;ping &#34; &lt;&gt; url = command
+&#34;ping www.example.com&#34;
+
+iex(18)&gt; url
+&#34;www.example.com&#34;
+&#43; Compound matches
+
+
+  &#43; match expression
+
+
+    &#43; `pattern = expression`
+
+    &#43; `iex(2)&gt; a = 1 &#43; 3`
+
+      &#43; 1 The expression on the right side is evaluated.
+
+      &#43; 2 The resulting value is matched against the left-side pattern.
+
+      &#43; 3 Variables from the pattern are bound.
+
+      &#43; 4 The result of the match expression is the result of the right-side term
+
+    &#43; match chaining
+
+iex(3)&gt; a = (b = 1 &#43; 3)
+4
+
+iex(4)&gt; a =b=1&#43;3
+4
+      &#43; 1 The expression 1 &#43; 3 is evaluated.
+
+      &#43; 2 The result (4) is matched against the pattern b.
+
+      &#43; 3 The result of the inner match (which is, again, 4) is matched against the pattern a.
+
+iex(6)&gt; date_time = {_, {hour, _, _}} = :calendar.local_time()
+
+iex(7)&gt; {_, {hour, _, _}} = date_time = :calendar.local_time()
+
+iex(8)&gt; date_time
+{{2023, 11, 11}, {21, 32, 34}}
+
+iex(9)&gt; hour
+21
+      &#43; ordering is not matter
+
+        &#43; because the result of a pattern match is always the result of the term being matched (whatever is on the right side of the match operator)
+
+&#43; General behavior
+
+
+  &#43; two parts:
+
+    &#43; *pattern* (left side)
+
+    &#43; *term* (right side)
+
+  &#43; You assert your expectations about the right-side term. If these expectations aren’t met, an error is raised.
+
+  &#43; You bind some parts of the term to variables from the pattern.
+
+
+Matching with functions
+
+def my_fun(arg1, arg2) do
+	...
+end
+&#43; `arg1` and `arg2` are patterns
+
+&#43; the arguments you provide are matched against the patterns specified in the function definition
+
+&#43; Multiclause functions
+
+
+  &#43; A clause is a function definition specified by the def expression
+
+defmodule Geometry do
+  def area({:rectangle, a, b}) do
+    a*b
+  end
+
+  def area({:square, a}) do
+  	a*a
+  end
+  
+  def area({:circle, r}) do
+  	r * r * 3.14
+  end
+end
+  &#43; clause order is matter, the runtime tries to select the clauses, using the order in the source code
+
+&#43; Guards
+
+
+  &#43; The guard is a logical expression that adds further conditions to the pattern
+
+defmodule TestNum do
+  def test(x) when x &lt; 0 do
+  	:negative
+  end
+  
+  def test(x) when x == 0 do
+  	:zero
+  end
+  
+  def test(x) when x &gt; 0 do
+  	:positive
+  end
+end
+  &#43; operators and functions allowed in guards
+
+    &#43; Comparison operators (=\=, !=, =\
+    , !
+, &gt;, &lt;, &lt;=, and &gt;=)
+
+    &#43; Boolean operators (and and or) and negation operators (not and !)
+
+    &#43; Arithmetic operators (&#43;, -, *, and /)
+
+    &#43; Type-check functions from the Kernel module (e.g., is_number/1, is_atom/1, and so on)
+
+    &#43; https://hexdocs.pm/elixir/patterns-and-guards.html#guards
+
+  &#43; when error raised inside guard, it won&#39;t propagate, guard expression will return `false`. The corresponding clause won’t match, but some other clause might
+
+&#43; Multiclause lambdas
+
+
+  &#43; general lambda syntax
+
+fn
+  pattern_1, pattern_2 -&gt;
+  	...
+  pattern_3, pattern_4 -&gt;
+  	...
+  ...
+end
+iex(3)&gt; test_num =
+fn
+  x when is_number(x) and x &lt; 0 -&gt; :negative
+  x when x == 0 -&gt; :zero
+  x when is_number(x) and x &gt; 0 -&gt; :positive
+end
+
+
+Conditionals">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/pages/chapter-3/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/pages/chapter-3/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Elixir in action notes (Alt + H)">Elixir in action notes</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Chapter 3
+    </h1>
+    <div class="post-meta"><span title='2025-01-03 00:00:00 +0000 UTC'>January 3, 2025</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>Pattern matching</p>
+<ul>
+<li>
+<p><code>=</code> operator is called the match operator</p>
+<ul>
+<li>assignment-like expression is an example of <em>pattern matching</em></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; person <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span></code></pre></div><pre><code>+ Matching tuples
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; <span style="color:#f92672">{</span>name, age<span style="color:#f92672">}</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span></code></pre></div><pre><code>+ Matching constants
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; person <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>:person, <span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; <span style="color:#f92672">{</span>:person, name, age<span style="color:#f92672">}</span> <span style="color:#f92672">=</span> person
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>:person, <span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>:ok, contents<span style="color:#f92672">}</span> <span style="color:#f92672">=</span> File.read<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;my_app.config&#34;</span><span style="color:#f92672">)</span>
+</span></span></code></pre></div><pre><code>  + By using constants in patterns, you tighten the match, ensuring some part of the right side has a specific value.
+
+  + `^` pin operator
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>7<span style="color:#f92672">)</span>&gt; expected_name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bob&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Bob&#34;</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>&gt; <span style="color:#f92672">{</span>^expected_name, _<span style="color:#f92672">}</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>9<span style="color:#f92672">)</span>&gt; <span style="color:#f92672">{</span>^expected_name, _<span style="color:#f92672">}</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Alice&#34;</span>, 30<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>** <span style="color:#f92672">(</span>MatchError<span style="color:#f92672">)</span> no match of right hand side value: <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Alice&#34;</span>, 30<span style="color:#f92672">}</span>
+</span></span></code></pre></div><pre><code>    + Using `^expected_name` in patterns indicates you expect the value of the variable `expected_name` to be in the appropriate position in the right-side term
+
+      + like `({&quot;Bob&quot;, _} = …)`
+
++ Matching lists
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; <span style="color:#f92672">[</span>first, second, third<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>1, 2, 3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>1, 2, 3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; <span style="color:#f92672">[</span>head | tail<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>1, 2, 3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>1, 2, 3<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>&gt; head
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>&gt; tail
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2, 3<span style="color:#f92672">]</span>
+</span></span></code></pre></div><pre><code>+ Matching maps
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; %<span style="color:#f92672">{</span>name: name, age: age<span style="color:#f92672">}</span> <span style="color:#f92672">=</span> %<span style="color:#f92672">{</span>name: <span style="color:#e6db74">&#34;Bob&#34;</span>, age: 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>%<span style="color:#f92672">{</span>age: 25, name: <span style="color:#e6db74">&#34;Bob&#34;</span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>&gt; %<span style="color:#f92672">{</span>age: age, works_at: works_at<span style="color:#f92672">}</span> <span style="color:#f92672">=</span> %<span style="color:#f92672">{</span>name: <span style="color:#e6db74">&#34;Bob&#34;</span>, age: 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>** <span style="color:#f92672">(</span>MatchError<span style="color:#f92672">)</span> no match of right hand side value
+</span></span></code></pre></div><pre><code>+ Matching bitstrings and binaries
+</code></pre>
+<pre tabindex="0"><code class="language-bahs" data-lang="bahs">iex(6)&gt; &lt;&lt;b1, rest :: binary&gt;&gt; = binary
+&lt;&lt;1, 2, 3&gt;&gt;
+
+iex(7)&gt; b1
+1
+
+iex(8)&gt; rest
+&lt;&lt;2, 3&gt;&gt;
+</code></pre><pre><code>+ Matching binary strings
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>16<span style="color:#f92672">)</span>&gt; command <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ping www.example.com&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;ping www.example.com&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>17<span style="color:#f92672">)</span>&gt; <span style="color:#e6db74">&#34;ping &#34;</span> &lt;&gt; url <span style="color:#f92672">=</span> command
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;ping www.example.com&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>18<span style="color:#f92672">)</span>&gt; url
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;www.example.com&#34;</span>
+</span></span></code></pre></div><pre><code>+ Compound matches
+
+
+  + match expression
+
+
+    + `pattern = expression`
+
+    + `iex(2)&gt; a = 1 + 3`
+
+      + 1 The expression on the right side is evaluated.
+
+      + 2 The resulting value is matched against the left-side pattern.
+
+      + 3 Variables from the pattern are bound.
+
+      + 4 The result of the match expression is the result of the right-side term
+
+    + match chaining
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; a <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>b <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> + 3<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>&gt; a <span style="color:#f92672">=</span>b<span style="color:#f92672">=</span>1+3
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>
+</span></span></code></pre></div><pre><code>      + 1 The expression 1 + 3 is evaluated.
+
+      + 2 The result (4) is matched against the pattern b.
+
+      + 3 The result of the inner match (which is, again, 4) is matched against the pattern a.
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>&gt; date_time <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>_, <span style="color:#f92672">{</span>hour, _, _<span style="color:#f92672">}}</span> <span style="color:#f92672">=</span> :calendar.local_time<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>7<span style="color:#f92672">)</span>&gt; <span style="color:#f92672">{</span>_, <span style="color:#f92672">{</span>hour, _, _<span style="color:#f92672">}}</span> <span style="color:#f92672">=</span> date_time <span style="color:#f92672">=</span> :calendar.local_time<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>&gt; date_time
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{{</span>2023, 11, 11<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>21, 32, 34<span style="color:#f92672">}}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>9<span style="color:#f92672">)</span>&gt; hour
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">21</span>
+</span></span></code></pre></div><pre><code>      + ordering is not matter
+
+        + because the result of a pattern match is always the result of the term being matched (whatever is on the right side of the match operator)
+
++ General behavior
+
+
+  + two parts:
+
+    + *pattern* (left side)
+
+    + *term* (right side)
+
+  + You assert your expectations about the right-side term. If these expectations aren’t met, an error is raised.
+
+  + You bind some parts of the term to variables from the pattern.
+</code></pre>
+<ul>
+<li>Matching with functions</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> my_fun(arg1, arg2) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>+ `arg1` and `arg2` are patterns
+
++ the arguments you provide are matched against the patterns specified in the function definition
+
++ Multiclause functions
+
+
+  + A clause is a function definition specified by the def expression
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Geometry</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> area({<span style="color:#e6db74">:rectangle</span>, a, b}) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    a<span style="color:#f92672">*</span>b
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> area({<span style="color:#e6db74">:square</span>, a}) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	a<span style="color:#f92672">*</span>a
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> area({<span style="color:#e6db74">:circle</span>, r}) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	r <span style="color:#f92672">*</span> r <span style="color:#f92672">*</span> <span style="color:#ae81ff">3.14</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>  + clause order is matter, the runtime tries to select the clauses, using the order in the source code
+
++ Guards
+
+
+  + The guard is a logical expression that adds further conditions to the pattern
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">TestNum</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> test(x) <span style="color:#f92672">when</span> x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#e6db74">:negative</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> test(x) <span style="color:#f92672">when</span> x <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#e6db74">:zero</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> test(x) <span style="color:#f92672">when</span> x <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#e6db74">:positive</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>  + operators and functions allowed in guards
+
+    + Comparison operators (=\=, !=, =\<mark>
+    , !
+</mark>, &gt;, &lt;, &lt;=, and &gt;=)
+
+    + Boolean operators (and and or) and negation operators (not and !)
+
+    + Arithmetic operators (+, -, *, and /)
+
+    + Type-check functions from the Kernel module (e.g., is_number/1, is_atom/1, and so on)
+
+    + https://hexdocs.pm/elixir/patterns-and-guards.html#guards
+
+  + when error raised inside guard, it won't propagate, guard expression will return `false`. The corresponding clause won’t match, but some other clause might
+
++ Multiclause lambdas
+
+
+  + general lambda syntax
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span>
+</span></span><span style="display:flex;"><span>  pattern_1, pattern_2 <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>  	...
+</span></span><span style="display:flex;"><span>  pattern_3, pattern_4 <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>  	...
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; test_num <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>fn
+</span></span><span style="display:flex;"><span>  x when is_number<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span> and x &lt; <span style="color:#ae81ff">0</span> -&gt; :negative
+</span></span><span style="display:flex;"><span>  x when x <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> -&gt; :zero
+</span></span><span style="display:flex;"><span>  x when is_number<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span> and x &gt; <span style="color:#ae81ff">0</span> -&gt; :positive
+</span></span><span style="display:flex;"><span>end
+</span></span></code></pre></div><ul>
+<li>
+<p>Conditionals</p>
+<ul>
+<li>Branching with multiclause functions</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; defmodule Polymorphic <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  def double<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span> when is_number<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span>, <span style="color:#66d9ef">do</span>: <span style="color:#ae81ff">2</span> * x
+</span></span><span style="display:flex;"><span>  def double<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span> when is_binary<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span>, <span style="color:#66d9ef">do</span>: x &lt;&gt; x
+</span></span><span style="display:flex;"><span>end
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; Polymorphic.double<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; Polymorphic.double<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Jar&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;JarJar&#34;</span>
+</span></span></code></pre></div><pre><code>+ Classical branching expressions
+
+  + if and unless
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> condition <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> condition, <span style="color:#e6db74">do</span>: something, <span style="color:#e6db74">else</span>: another_thing
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unless</span> result <span style="color:#f92672">==</span> <span style="color:#e6db74">:error</span>, <span style="color:#e6db74">do</span>: send_notification(...)
+</span></span></code></pre></div><pre><code>  + cond
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">cond</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  expression_1 <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>  	...
+</span></span><span style="display:flex;"><span>  expression_2 <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>  	...
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>  + case
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">case</span> expression <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  pattern_1 <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>  	...
+</span></span><span style="display:flex;"><span>  pattern_2 <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>  	...
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>    + no differences between case and multiclause functions
+
++ The with expression
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> extract_user(user) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">case</span> extract_login(user) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">:error</span>, reason} <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>      {<span style="color:#e6db74">:error</span>, reason}
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">:ok</span>, login} <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">case</span> extract_email(user) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>      	{<span style="color:#e6db74">:error</span>, reason} <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>      	  {<span style="color:#e6db74">:error</span>, reason}
+</span></span><span style="display:flex;"><span>      	{<span style="color:#e6db74">:ok</span>, email} <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>      	  <span style="color:#66d9ef">case</span> extract_password(user) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>            {<span style="color:#e6db74">:error</span>, reason} <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>              {<span style="color:#e6db74">:error</span>, reason}
+</span></span><span style="display:flex;"><span>            {<span style="color:#e6db74">:ok</span>, password} <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>      	  	  %{<span style="color:#e6db74">login</span>: login, <span style="color:#e6db74">email</span>: email, <span style="color:#e6db74">password</span>: password}
+</span></span><span style="display:flex;"><span>      	  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> extract_user(user) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  with {<span style="color:#e6db74">:ok</span>, login} <span style="color:#f92672">&lt;-</span> extract_login(user),
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">:ok</span>, email} <span style="color:#f92672">&lt;-</span> extract_email(user),
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">:ok</span>, password} <span style="color:#f92672">&lt;-</span> extract_password(user) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">:ok</span>, %{<span style="color:#e6db74">login</span>: login, <span style="color:#e6db74">email</span>: email, <span style="color:#e6db74">password</span>: password}}
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><ul>
+<li>
+<p>Loops and iterations</p>
+<ul>
+<li>The principal looping tool in Elixir is <em>recursion</em></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">ListHelper</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> sum([]), <span style="color:#e6db74">do</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> sum([head <span style="color:#f92672">|</span> tail]) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	head <span style="color:#f92672">+</span> sum(tail)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>+ Tail function calls
+
+  + If the last thing a function does is call another function (or itself), you’re dealing with a tail call
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> original_fun(...) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  another_fun(...)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">ListHelper</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> sum(list) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	do_sum(<span style="color:#ae81ff">0</span>, list)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defp</span> do_sum(current_sum, []) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	current_sum
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defp</span> do_sum(current_sum, [head <span style="color:#f92672">|</span> tail]) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	new_sum <span style="color:#f92672">=</span> head <span style="color:#f92672">+</span> current_sum
+</span></span><span style="display:flex;"><span>  	do_sum(new_sum, tail)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>+ Recognizing tail calls
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> fun(...) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> something <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    another_fun(...) <span style="color:#75715e"># Tail call</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> fun(...) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> another_fun(...) <span style="color:#75715e"># Not a tail call</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>    + After another_fun finishes, you must increment its result by 1 to compute the final result of fun
+
+  + https://github.com/sasa1977/elixir-in-action/blob/3rd-edition/code_samples/ch03/recursion_practice_tc.ex
+
++ Higher-order functions
+
+  + A higher-order function is a type of function that takes one or more functions as its input or returns one or more functions (or both)
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; Enum.each<span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>1, 2, 3<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>fn x -&gt; IO.puts<span style="color:#f92672">(</span>x<span style="color:#f92672">)</span> end
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>
+</span></span></code></pre></div><pre><code>+ Comprehensions
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>&gt; multiplication_table <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x &lt;- 1..9,
+</span></span><span style="display:flex;"><span>    y &lt;- 1..9,
+</span></span><span style="display:flex;"><span>    into: %<span style="color:#f92672">{}</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{{</span>x, y<span style="color:#f92672">}</span>, x*y<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>end
+</span></span></code></pre></div><pre><code>+ Streams
+
+  + A stream is a special kind of enumerable that can be useful for doing lazy composable operations over anything enumerable
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>7<span style="color:#f92672">)</span>&gt; employees
+</span></span><span style="display:flex;"><span>  |&gt; Stream.with_index<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>  |&gt; Enum.each<span style="color:#f92672">(</span>fn <span style="color:#f92672">{</span>employee, index<span style="color:#f92672">}</span> -&gt;
+</span></span><span style="display:flex;"><span>  IO.puts<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;#{index + 1}. #{employee}&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  end<span style="color:#f92672">)</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Elixir in action notes</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

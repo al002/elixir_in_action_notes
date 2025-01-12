@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Chapter 2 | Elixir in action notes</title>
+<meta name="keywords" content="">
+<meta name="description" content="Organizing code
+
+
+Modules
+
+A module is a collection of functions, somewhat like a namespace
+
+
+
+defmodule Geometry do
+  def rectangle_area(a, b) do
+  	a*b
+  end
+end
+
+Functions
+
+def rectangle_area(a, b) do
+	...
+end
+def rectangle_area(a, b), do: a * b
+&#43; Arity
+
+
+  &#43; the number of arguments a function receives
+
+  &#43; A function is uniquely identified by its containing module, name, and arity
+
+  &#43; Rectangle.area/2, where /2 denotes the function’s arity.
+
+  &#43; same name but different arities are two different functions
+
+  &#43; commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments
+
+  &#43; `\\` operator followed by the argument’s default value
+
+defmodule Calculator do
+	def add(a, b \\ 0), do: a &#43; b
+end
+    &#43; generates two functions
+
+defmodule Calculator do
+  def add(a), do: add(a, 0)
+  def add(a, b), do: a&#43;b
+end
+  &#43; cannot accept a variable number of arguments
+
+&#43; Visibility
+
+
+  &#43; `def` macro is `exported`
+
+  &#43; `defp` macro is private
+
+    &#43; can be used only inside the module it’s defined in
+
+
+Imports and alias
+
+# Import
+
+defmodule MyModule do
+  import IO
+
+  def my_function do
+  	puts &#34;Calling imported function.&#34;
+  end
+end
+&#43; Importing a module allows to call its public functions without prefixing them with the module name
+
+# Alias
+
+defmodule MyModule do
+  alias IO, as: MyIO
+
+  def my_function do
+  	MyIO.puts(&#34;Calling imported function.&#34;)
+  end
+end
+
+defmodule MyModule do
+  alias Geometry.Rectangle, as: Rectangle
+  
+  def my_function do
+  	Rectangle.area(...)
+  end
+end
+
+
+Module attributes">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/pages/chapter-2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/pages/chapter-2/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Elixir in action notes (Alt + H)">Elixir in action notes</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Chapter 2
+    </h1>
+    <div class="post-meta"><span title='2025-01-04 00:00:00 +0000 UTC'>January 4, 2025</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>Organizing code</p>
+<ul>
+<li>
+<p>Modules</p>
+<ul>
+<li>A module is a collection of functions, somewhat like a namespace</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Geometry</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> rectangle_area(a, b) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	a<span style="color:#f92672">*</span>b
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><ul>
+<li>Functions</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> rectangle_area(a, b) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> rectangle_area(a, b), <span style="color:#e6db74">do</span>: a <span style="color:#f92672">*</span> b
+</span></span></code></pre></div><pre><code>+ Arity
+
+
+  + the number of arguments a function receives
+
+  + A function is uniquely identified by its containing module, name, and arity
+
+  + Rectangle.area/2, where /2 denotes the function’s arity.
+
+  + same name but different arities are two different functions
+
+  + commonly, a lower-arity function delegates to a higher-arity function, providing some default arguments
+
+  + `\\` operator followed by the argument’s default value
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Calculator</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">def</span> add(a, b \\ <span style="color:#ae81ff">0</span>), <span style="color:#e6db74">do</span>: a <span style="color:#f92672">+</span> b
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>    + generates two functions
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Calculator</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> add(a), <span style="color:#e6db74">do</span>: add(a, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> add(a, b), <span style="color:#e6db74">do</span>: a<span style="color:#f92672">+</span>b
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>  + cannot accept a variable number of arguments
+
++ Visibility
+
+
+  + `def` macro is `exported`
+
+  + `defp` macro is private
+
+    + can be used only inside the module it’s defined in
+</code></pre>
+<ul>
+<li>Imports and alias</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#75715e"># Import</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">MyModule</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">import</span> <span style="color:#a6e22e">IO</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> my_function <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	puts <span style="color:#e6db74">&#34;Calling imported function.&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>+ Importing a module allows to call its public functions without prefixing them with the module name
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#75715e"># Alias</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">MyModule</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">alias</span> <span style="color:#a6e22e">IO</span>, <span style="color:#e6db74">as</span>: <span style="color:#a6e22e">MyIO</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> my_function <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#a6e22e">MyIO</span><span style="color:#f92672">.</span>puts(<span style="color:#e6db74">&#34;Calling imported function.&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">MyModule</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">alias</span> <span style="color:#a6e22e">Geometry.Rectangle</span>, <span style="color:#e6db74">as</span>: <span style="color:#a6e22e">Rectangle</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> my_function <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#a6e22e">Rectangle</span><span style="color:#f92672">.</span>area(...)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><ul>
+<li>
+<p>Module attributes</p>
+<ul>
+<li>used as compile-time constants</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@pi</span> <span style="color:#ae81ff">3.14159</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> area(r), <span style="color:#e6db74">do</span>: r<span style="color:#f92672">*</span>r<span style="color:#f92672">*</span><span style="color:#a6e22e">@pi</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> circumference(r), <span style="color:#e6db74">do</span>: <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>r<span style="color:#f92672">*</span><span style="color:#a6e22e">@pi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>+ attribute can be registered
+
+  + stored in the generated binary
+
+  + can be accessed at run time
+
+  + @module, @doc
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@moduledoc</span> <span style="color:#e6db74">&#34;Implements basic circle functions&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@pi</span> <span style="color:#ae81ff">3.14159</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@doc</span> <span style="color:#e6db74">&#34;Computes the area of a circle&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> area(r), <span style="color:#e6db74">do</span>: r<span style="color:#f92672">*</span>r<span style="color:#f92672">*</span><span style="color:#a6e22e">@pi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@doc</span> <span style="color:#e6db74">&#34;Computes the circumference of a circle&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> circumference(r), <span style="color:#e6db74">do</span>: <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>r<span style="color:#f92672">*</span><span style="color:#a6e22e">@pi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><pre><code>  + Type specification (typespecs)
+
+    + provide type information for functions
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@pi</span> <span style="color:#ae81ff">3.14159</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@spec</span> area(number) <span style="color:#f92672">::</span> number
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> area(r), <span style="color:#e6db74">do</span>: r<span style="color:#f92672">*</span>r<span style="color:#f92672">*</span><span style="color:#a6e22e">@pi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@spec</span> circumference(number) <span style="color:#f92672">::</span> number
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">def</span> circumference(r), <span style="color:#e6db74">do</span>: <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>r<span style="color:#f92672">*</span><span style="color:#a6e22e">@pi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><ul>
+<li>
+<p>Type system</p>
+<ul>
+<li>
+<p>Numbers</p>
+<ul>
+<li>
+<p>can be integers or floats</p>
+</li>
+<li>
+<p>operator <code>/</code> always returns a float</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Atoms</p>
+<ul>
+<li>literally named constants</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#e6db74">:an_atom</span>
+</span></span></code></pre></div><pre><code>  + consists of `text` and `value`
+
+    + `text` is what ever after colon character `:`
+
+      + At runtime, `text` kept in the `atom table`
+
+    + `value` is data goes into the variable
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span>variable <span style="color:#f92672">=</span> <span style="color:#e6db74">:some_atom</span>
+</span></span></code></pre></div><pre><code>      + it’s a reference to the atom table
+
+      + `variable` not contain entire text, but a reference to `atom table`
+
+      + memory consumption is low
+
+      + comparisons is fast
+
+      + code is readable
+
+  + Aliases
+
+    + Omit the beginning colon
+
+    + Start with an uppercase character
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#a6e22e">AnAtom</span>
+</span></span></code></pre></div><pre><code>    + transformed into `:&quot;Elixir.AnAtom&quot;
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; AnAtom <span style="color:#f92672">==</span> :<span style="color:#e6db74">&#34;Elixir.AnAtom&#34;</span>
+</span></span><span style="display:flex;"><span>true
+</span></span></code></pre></div><pre><code>    + implicit add `Elixir` prefix
+
+      + if an alias already contains `Elixir`, prefix is not added
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; AnAtom <span style="color:#f92672">==</span> Elixir.AnAtom
+</span></span><span style="display:flex;"><span>true
+</span></span></code></pre></div><pre><code>    + Module aliases
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#f92672">alias</span> <span style="color:#a6e22e">IO</span>, <span style="color:#e6db74">as</span>: <span style="color:#a6e22e">MyIO</span>
+</span></span></code></pre></div><pre><code>        + `MyIO` should transformed into `IO`
+
+        + `IO` is atom
+
+          + transformed into `Elixir.IO`
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>&gt; MyIO <span style="color:#f92672">==</span> Elixir.IO
+</span></span><span style="display:flex;"><span>true
+</span></span></code></pre></div><pre><code>    + As booleans
+
+      + `:true` `true`
+
+      + `:false` `false`
+
+    + nil
+
+      + `:nil`
+
+      + `nil`
+
+      + `nil` and `false` is falsy value, everything else is truthy
+
+      + If all expressions evaluate to a falsy value, the result of the _last expression_ is returned.
+
++ Tuples
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; person <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Bob&#34;</span>, 25<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; put_elem<span style="color:#f92672">(</span>person, 1, 26<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;Bob&#34;</span>, 26<span style="color:#f92672">}</span>
+</span></span></code></pre></div><pre><code>  + appropriate for grouping a small, fixed number of elements together
+
++ Lists
+
+  + manage dynamic, variable-sized collections of data
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; prime_numbers <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>2, 3, 5, 7<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>2, 3, 5, 7<span style="color:#f92672">]</span>
+</span></span></code></pre></div><pre><code>  + work like singly linked lists
+
+  + most of the operations on lists have an O(n) complexity
+
+    + include `Kernel.length/1` function
+
++ Immutability
+
+
+  + modifying tuples
+
+    + always a complete, shallow copy of the old versioin
+
+  + modifying list
+
+    + shallow copies of the first n – 1 elements followed by the modified element. After that, the tails are completely shared
+
+  + benefits
+
+    + side-effect-free functions and data consistency
+
++ Maps
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span>iex(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">&gt;</span> empty_map <span style="color:#f92672">=</span> %{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex(<span style="color:#ae81ff">2</span>)<span style="color:#f92672">&gt;</span> squares <span style="color:#f92672">=</span> %{<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">9</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">&gt;</span> squares <span style="color:#f92672">=</span> <span style="color:#a6e22e">Map</span><span style="color:#f92672">.</span>new([{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>}, {<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>}, {<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">9</span>}])
+</span></span><span style="display:flex;"><span>%{<span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">9</span>}
+</span></span></code></pre></div><pre><code>  + 
+
++ Binaries and bitstrings
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; <span style="color:#e6db74">&lt;&lt;1, 2, 3&gt;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;&lt;1</span>, 2, 3&gt;&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; <span style="color:#e6db74">&lt;&lt;256&gt;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;&lt;0&gt;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">iex(5)&gt; &lt;&lt;25</span>7::16&gt;&gt;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;&lt;1, 1</span>&gt;&gt;
+</span></span></code></pre></div><pre><code>  + bitstring
+
+    + total size of all the values isn’t a multiple of 8
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>7<span style="color:#f92672">)</span>&gt; <span style="color:#e6db74">&lt;&lt;1::1</span>, 0::1, 1::1&gt;&gt;
+</span></span><span style="display:flex;"><span>&lt;&lt;5::size<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt;&gt;
+</span></span></code></pre></div><pre><code>    + concat bitstring
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>&gt; <span style="color:#e6db74">&lt;&lt;1, 2&gt;&gt; &lt;&gt; &lt;&lt;3, 4&gt;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;&lt;1</span>, 2, 3, 4&gt;&gt;
+</span></span></code></pre></div><pre><code>+ Strings
+
+  + Strings are represented using either a binary or a list type
+
+  + Binary string
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; <span style="color:#e6db74">&#34;This is a string&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;This is a string&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; <span style="color:#e6db74">&#34;Embedded expression: #{3 + 0.14}&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Embedded expression: 3.14&#34;</span>
+</span></span></code></pre></div><pre><code>    + sigils syntax
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>&gt; ~s<span style="color:#f92672">(</span>This is also a string<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;This is also a string&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>&gt; ~s<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Do... or do not. There is no try.&#34;</span> -Master Yoda<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;\&#34;Do... or do not. There is no try.\&#34; -Master Yoda&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>7<span style="color:#f92672">)</span>&gt; ~S<span style="color:#f92672">(</span>Not interpolated <span style="color:#75715e">#{3 + 0.14})</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Not interpolated \#{3 + 0.14}&#34;</span>
+</span></span></code></pre></div><pre><code>      + 
+
+  + Character lists
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; IO.puts<span style="color:#f92672">([</span>65, 66, 67<span style="color:#f92672">])</span>
+</span></span><span style="display:flex;"><span>ABC
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ~c sigil</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; IO.puts<span style="color:#f92672">(</span>~c<span style="color:#e6db74">&#34;ABC&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>ABC
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># single quote</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; IO.puts<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;ABC&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>ABC
+</span></span></code></pre></div><pre><code>    + better use `~c` sigil
+
+    + charlist not compatible with binary string
+
+      + some functions work only with character lists
+
+        + pure Erlang library
+
+        + `String.to_charlist/1` convert a binary string to charlist
+
+    + prefer binary string
+
++ Functions
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span>square <span style="color:#f92672">=</span> <span style="color:#66d9ef">fn</span> x <span style="color:#f92672">-&gt;</span>
+</span></span><span style="display:flex;"><span>	x<span style="color:#f92672">*</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Enum</span><span style="color:#f92672">.</span>each(
+</span></span><span style="display:flex;"><span>  [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>],
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fn</span> x <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts(x) <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Enum</span><span style="color:#f92672">.</span>each(
+</span></span><span style="display:flex;"><span>  [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts<span style="color:#f92672">/</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex(<span style="color:#ae81ff">7</span>)<span style="color:#f92672">&gt;</span> lambda <span style="color:#f92672">=</span> <span style="color:#66d9ef">fn</span> x, y, z <span style="color:#f92672">-&gt;</span> x <span style="color:#f92672">*</span> y <span style="color:#f92672">+</span> z <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex(<span style="color:#ae81ff">8</span>)<span style="color:#f92672">&gt;</span> lambda <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>(&amp;1 <span style="color:#f92672">*</span> &amp;2 <span style="color:#f92672">+</span> &amp;3)
+</span></span></code></pre></div><pre><code>  + Closures
+
+    + by holding a reference to a lambda, you indirectly hold a reference to all variables it uses, even if those variables are from the external scope
+
++ Higher-level types
+
+
+  + Range
+
+
+    + It's enumerable
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; range <span style="color:#f92672">=</span> 1..2
+</span></span></code></pre></div><pre><code>    + represented as a map
+
+      + memory footprint is small and constant
+
+  + Keyword
+
+    + Special case of a list
+
+
+      + each element is a two-element tuple
+
+
+        + first is atom
+
+        + second can be of any type
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; days <span style="color:#f92672">=</span> <span style="color:#f92672">[{</span>:monday, 1<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>:tuesday, 2<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>:wednesday, 3<span style="color:#f92672">}]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; days <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>monday: 1, tuesday: 2, wednesday: 3<span style="color:#f92672">]</span>
+</span></span></code></pre></div><pre><code>    + Allows you to omit the square brackets if the last argument is a keyword list
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>&gt; IO.inspect<span style="color:#f92672">([</span>100, 200, 300<span style="color:#f92672">]</span>, width: 3, limit: 1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>100,
+</span></span><span style="display:flex;"><span>...<span style="color:#f92672">]</span>
+</span></span></code></pre></div><pre><code>  + MapSet
+
+    + The implementation of a set
+
+      + store of unique values
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; days <span style="color:#f92672">=</span> MapSet.new<span style="color:#f92672">([</span>:monday, :tuesday, :wednesday<span style="color:#f92672">])</span>
+</span></span><span style="display:flex;"><span>MapSet.new<span style="color:#f92672">([</span>:monday, :tuesday, :wednesday<span style="color:#f92672">])</span>
+</span></span></code></pre></div><pre><code>  + Times and dates
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Date</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; date <span style="color:#f92672">=</span> ~D<span style="color:#f92672">[</span>2023-01-31<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>~D<span style="color:#f92672">[</span>2023-01-31<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>&gt; date.year
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2023</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; date.month
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Time</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; time <span style="color:#f92672">=</span> ~T<span style="color:#f92672">[</span>11:59:12.00007<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># NativDateTime</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; naive_datetime <span style="color:#f92672">=</span> ~N<span style="color:#f92672">[</span>2023-01-31 11:59:12.000007<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># DateTime, work with datetimes and supports time zones</span>
+</span></span><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; datetime <span style="color:#f92672">=</span> ~U<span style="color:#f92672">[</span>2023-01-31 11:59:12.000007Z<span style="color:#f92672">]</span>
+</span></span></code></pre></div><pre><code>  + DateTime
+
++ IO lists
+
+
+  + Special sort of list that’s useful for incrementally building output that
+</code></pre>
+<p>will be forwarded to an I/O device</p>
+<pre><code>  + Element must one of following
+
+    + An integer in the range of 0 to 255
+
+    + A binary
+
+    + An IO list
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; iolist <span style="color:#f92672">=</span> <span style="color:#f92672">[[[</span>~c<span style="color:#e6db74">&#34;He&#34;</span><span style="color:#f92672">]</span>, <span style="color:#e6db74">&#34;llo,&#34;</span><span style="color:#f92672">]</span>, <span style="color:#e6db74">&#34; worl&#34;</span>, <span style="color:#e6db74">&#34;d!&#34;</span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><pre><code>  + appending to an IO list is O(1) because you can use nesting
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>&gt; iolist <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
+</span></span><span style="display:flex;"><span>iolist <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>iolist, <span style="color:#e6db74">&#34;This&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>iolist <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>iolist, <span style="color:#e6db74">&#34; is&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>iolist <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>iolist, <span style="color:#e6db74">&#34; an&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>iolist <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>iolist, <span style="color:#e6db74">&#34; IO list.&#34;</span><span style="color:#f92672">]</span> 
+</span></span></code></pre></div><pre><code>  + 
+</code></pre>
+<ul>
+<li>
+<p>Operators</p>
+<ul>
+<li>| Operator | Decription |
+| \<mark>
+    =, !
+</mark> | Strict equality/inequality |
+| ==,!= | Weak equality/inequality |
+| &lt;, &gt;, &gt;=, &lt;= | Less than, greater than, less than or equal, greater than or equal |</li>
+</ul>
+</li>
+<li>
+<p>Macros</p>
+<ul>
+<li>perform powerful code transformations at compile time</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#66d9ef">unless</span> some_expression <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  block_1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  block_2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># tranform to</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> some_expression <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  block_2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  block_1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><ul>
+<li>
+<p>Understanding the runtime</p>
+<ul>
+<li>
+<p>When start runtime, an OS process for the BEAM instance is started</p>
+</li>
+<li>
+<p>VM keeps track of all modules loaded in-memory</p>
+<ul>
+<li>
+<p>If module is not loaded</p>
+<ul>
+<li>tries to find the compiled module file—the bytecode—on the disk</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Module name is alias correspond to <code>:&quot;Elixir:ModuleName&quot;</code></p>
+<ul>
+<li>
+<p><code>Geometry</code> correspond to <code>:&quot;Elixir.Geometry&quot;</code></p>
+</li>
+<li>
+<p><code>elixirc</code> generate <code>.beam</code> file</p>
+<ul>
+<li>multiple module in one file, <code>elixirc</code> will generate multiple <code>.beam</code> file</li>
+</ul>
+</li>
+<li>
+<p>When call function of a module</p>
+<ul>
+<li>
+<p>The VM looks for the file in the current folder and then in the code paths</p>
+</li>
+<li>
+<p>code path are used: <code>:code.get_path</code></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Erlang module use simple filenames</p>
+<ul>
+<li>
+<p><code>:code.get_path</code></p>
+</li>
+<li>
+<p><code>xyz.beam</code></p>
+<ul>
+<li>
+<p><code>xyz</code> is the expanded form of an alias</p>
+<ul>
+<li><code>Elixir.MyModule</code> when the module is named <code>MyModule</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Dynamically calling functions</p>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iex<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>&gt; apply<span style="color:#f92672">(</span>IO, :puts, <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;Dynamic function call.&#34;</span><span style="color:#f92672">])</span>
+</span></span><span style="display:flex;"><span>Dynamic <span style="color:#66d9ef">function</span> call.
+</span></span></code></pre></div><pre><code>+ Starting the runtime
+
+  + interactive shell
+
+    + `iex`
+
+    + shell is *interprets* input, not performant as compiled code
+
+    + but modules are always compiled
+
+  + running scripts
+
+    + `elixir mys_ource.ex`
+
+    + The BEAM instance is started.
+
+    + The file my_source.ex is compiled in-memory, and the resulting modules are loaded to the VM. No .beam file is generated on the disk.
+
+    + Whatever code resides outside of a module is interpreted.
+
+    + Once everything is finished, BEAM is stopped.
+
+    + `--no halt` make BEAM instance not to terminate
+
+  + the `mix` tool
+
+    + Whenever you need to build a production-ready system, mix is your best option.
+
+  + 
+</code></pre>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Elixir in action notes</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
